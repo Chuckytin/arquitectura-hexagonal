@@ -1,0 +1,54 @@
+package com.springboot.web.product.application.command.create;
+
+import com.springboot.web.common.mediator.RequestHandler;
+import com.springboot.web.common.util.FileUtils;
+import com.springboot.web.product.domain.entity.Product;
+import com.springboot.web.product.domain.port.ProductRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CreateProductHandler implements RequestHandler<CreateProductRequest, Void> {
+
+    private final ProductRepository productRepository;
+    private final FileUtils fileUtils;
+
+    @Override
+    public Void handle(CreateProductRequest request) {
+
+        Long productId = request.getId();
+
+        if (productRepository.existsById(productId)) {
+            throw new IllegalArgumentException("Product already exists with id " + productId);
+        }
+
+        String image = null;
+
+        if (request.getFile() != null && !request.getFile().isEmpty()) {
+            image = fileUtils.saveProductImage(request.getFile());
+        }
+
+        Product product = Product.builder()
+                .id(productId)
+                .name(request.getName())
+                .description(request.getDescription())
+                .price(request.getPrice())
+                .image(image)
+                .build();
+
+        productRepository.upsert(product);
+
+        log.info("Product created with id {}", productId);
+
+        return null;
+    }
+
+    @Override
+    public Class<CreateProductRequest> getRequestType() {
+        return CreateProductRequest.class;
+    }
+
+}

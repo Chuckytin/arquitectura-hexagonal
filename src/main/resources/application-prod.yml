@@ -1,0 +1,13 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 10MB
+  cache:
+    type: simple
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

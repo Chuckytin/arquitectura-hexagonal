@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: web
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    enabled: true
+
+api:
+  docs:
+    enabled: true
+    title: Web API Documentation
+    description: API documentation for the Web application.
+    version: 1.0.0
+    contact:
+      name: Angel Torcal Catalán
+      email: angeltorcalcatalan@gmail.com
+      url: https://github.com/Chuckytin
+    license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0
+    servers:
+      url: http://localhost:8080
+      description: API server for local development
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5,0.95,0.99
+    tags:
+      application: web
+      environment: test
