@@ -8,6 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Clase DeleteProductHandler que maneja la lógica de negocio para eliminar un producto existente.
+ * Implementa la interfaz RequestHandler con un tipo de solicitud DeleteProductRequest y un tipo de respuesta Void,
+ * lo que indica que no se espera una respuesta específica después de manejar esta solicitud.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

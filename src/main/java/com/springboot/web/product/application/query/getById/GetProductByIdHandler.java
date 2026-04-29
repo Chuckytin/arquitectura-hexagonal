@@ -8,6 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Clase GetProductByIdHandler que maneja la lógica de negocio para obtener un producto por su ID.
+ * Implementa la interfaz RequestHandler con un tipo de solicitud GetProductByIdRequest y un tipo de respuesta GetProductByIdResponse,
+ * lo que indica que se espera una respuesta específica después de
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

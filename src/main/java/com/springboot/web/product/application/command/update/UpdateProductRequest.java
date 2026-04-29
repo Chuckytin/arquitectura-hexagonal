@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Clase UpdateProductRequest que representa la solicitud para actualizar un producto existente.
+ * Implementa la interfaz Request con un tipo de respuesta Void,
+ * lo que indica que no se espera una respuesta específica después de manejar esta solicitud.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

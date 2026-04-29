@@ -10,6 +10,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Clase UpdateProductDto que representa lo que se espera recibir en la solicitud para actualizar un producto existente.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

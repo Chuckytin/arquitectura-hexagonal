@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Clase ProductDto que representa el objeto de transferencia de datos para un producto.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

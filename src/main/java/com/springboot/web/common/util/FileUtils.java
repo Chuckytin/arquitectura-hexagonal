@@ -12,6 +12,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Clase Utility para manejar operaciones relacionadas con archivos, como guardar y eliminar imágenes de productos.
+ */
 @Service
 public class FileUtils {
 

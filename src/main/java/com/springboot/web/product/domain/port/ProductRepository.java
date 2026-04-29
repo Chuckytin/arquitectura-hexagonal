@@ -5,6 +5,11 @@ import com.springboot.web.product.domain.entity.Product;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interfaz ProductRepository que define las operaciones de persistencia para la entidad Product.
+ * Esta interfaz actúa como un contrato para cualquier implementación de repositorio que se encargue de manejar la persistencia de los productos,
+ * permitiendo así una separación clara entre la lógica de negocio y la capa de acceso a datos.
+ */
 public interface ProductRepository {
 
     void upsert(Product product);

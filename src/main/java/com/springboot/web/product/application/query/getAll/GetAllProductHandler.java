@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Clase GetAllProductHandler que maneja la lógica de negocio para obtener todos los productos.
+ * Implementa la interfaz RequestHandler con un tipo de solicitud GetAllProductRequest y un tipo de respuesta GetAllProductResponse,
+ * lo que indica que se espera una respuesta específica después de manejar esta
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

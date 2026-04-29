@@ -9,6 +9,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Clase Mediator que actúa como un intermediario para manejar solicitudes (requests)
+ * y delegarlas a los manejadores correspondientes (handlers).
+ * Utiliza un mapa para asociar cada tipo de solicitud con su manejador correspondiente.
+ * Permite la ejecución síncrona y asíncrona de las solicitudes.
+ */
 @Component
 @Slf4j
 public class Mediator {

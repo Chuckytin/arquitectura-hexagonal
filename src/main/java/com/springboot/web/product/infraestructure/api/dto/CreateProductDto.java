@@ -10,6 +10,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Clase CreateProductDto que representa lo que se espera recibir en la solicitud para crear un nuevo producto.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

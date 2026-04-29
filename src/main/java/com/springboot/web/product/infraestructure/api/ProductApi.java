@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * Interfaz ProductApi que define los endpoints para la gestión de productos.
+ */
 public interface ProductApi {
 
     ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(required = false) Long pageSize);

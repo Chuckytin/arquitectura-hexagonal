@@ -2,6 +2,9 @@ package com.springboot.web.product.infraestructure.database.entity;
 
 import lombok.Data;
 
+/**
+ * Clase ProductEntity que representa la entidad de producto en la base de datos.
+ */
 @Data
 public class ProductEntity {
 
