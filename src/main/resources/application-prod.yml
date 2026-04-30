@@ -1,4 +1,13 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    naming:
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
   servlet:
     multipart:
       max-file-size: 50MB
@@ -11,3 +20,12 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health"
+  endpoint:
+    health:
+      show-details: never

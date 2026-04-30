@@ -1,0 +1,21 @@
+services:
+  web:
+    env_file:
+      - .env.prod
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  postgres:
+    env_file:
+      - .env.prod
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - postgres-data-prod:/var/lib/postgresql
+      - ./docker-config/database/init.sh:/docker-entrypoint-initdb.d/init.sh
+
+volumes:
+  postgres-data-prod:

@@ -2,13 +2,19 @@ services:
   web:
     build: .
     container_name: web-api
-    restart: always
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
+
+  postgres:
+    image: postgres:latest
+    container_name: web-db
+    ports:
+      - "5432:5432"
