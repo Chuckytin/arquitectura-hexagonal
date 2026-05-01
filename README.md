@@ -16,35 +16,6 @@ La idea no ha sido solo construir una API funcional, sino entender cómo **desac
 - Manejo de archivos (imágenes) como parte de la infraestructura
 - Tests de integración para validar el comportamiento real del sistema
 
-## Infraestructura y despliegue
-
-El proyecto incluye una configuración completa de Docker con soporte para múltiples entornos.
-
-### Entornos
-- **Dev**: credenciales visibles en docker-compose.dev.yml, Adminer disponible en `localhost:8888`
-- **Prod**: credenciales gestionadas via `.env.prod` (excluido del repositorio)
-
-### Requisitos
-- Docker Desktop
-- make (`choco install make` en Windows)
-
-### Comandos disponibles
-
-| Comando | Descripción |
-|---|---|
-| `make dev` | Levanta entorno dev con build |
-| `make dev-up` | Levanta entorno dev sin rebuild |
-| `make prod` | Levanta entorno prod con build |
-| `make prod-up` | Levanta entorno prod sin rebuild |
-| `make down-dev` | Para entorno dev conservando datos |
-| `make down-prod` | Para entorno prod conservando datos |
-| `make down-clean` | Para todo y elimina volúmenes |
-
-### Bases de datos
-Cada entorno inicializa automáticamente dos bases de datos al crear el volumen por primera vez:
-- **Dev**: `web_db` y `web_db_it`
-- **Prod**: `web_app_db` y `web_app_db_it`
-
 ### Objetivo
 
 El objetivo ha sido interiorizar cómo estructurar aplicaciones mantenibles y escalables, donde:
@@ -52,3 +23,47 @@ El objetivo ha sido interiorizar cómo estructurar aplicaciones mantenibles y es
 - Cambiar la base de datos o el framework no afecta al dominio
 - La lógica de negocio es fácilmente testeable
 - El código es más limpio, modular y extensible
+
+---
+
+## Infraestructura y despliegue
+
+El proyecto incluye una configuración Docker completa con soporte para entornos dev y prod, Dockerfiles separados por entorno y gestión de volúmenes independientes.
+
+### Requisitos
+
+- Docker Desktop
+- `make` — en Windows: `choco install make`
+
+### Entornos
+
+| Entorno | Dockerfile | Base de datos | Adminer |
+|---|---|---|---|
+| Dev | `Dockerfile.dev` | `web_db` + `web_db_it` | `localhost:8888` |
+| Prod | `Dockerfile.prod` | `web_app_db` + `web_app_db_it` | No disponible |
+
+Las bases de datos IT se crean automáticamente al inicializar el volumen por primera vez via `docker-config/database/init.sh`.
+
+Las credenciales de prod se gestionan en `.env.prod`, excluido del repositorio. Ver `.env.example` como referencia.
+
+### Comandos
+
+Para la mayoría de casos `make dev-down` + `make dev` es suficiente.
+
+| Comando | Descripción |
+|---|---|
+| `make dev` | Levanta dev con build |
+| `make dev-up` | Levanta dev sin rebuild |
+| `make dev-restart` | Fuerza recreación sin hacer down |
+| `make dev-stop` | Pausa dev conservando estado |
+| `make dev-down` | Elimina contenedores sin borrar datos |
+| `make dev-clean` | Reset total — borra volúmenes y base de datos |
+| `make prod` | Levanta prod con build |
+| `make prod-up` | Levanta prod sin rebuild |
+| `make prod-down` | Para prod conservando datos |
+| `make prod-clean` | Reset total prod — borra volúmenes y base de datos |
+| `make status` | Estado de los contenedores activos |
+| `make logs-web` | Logs en tiempo real del contenedor web |
+| `make logs-db` | Logs en tiempo real de postgres |
+| `make shell-web` | Shell del contenedor web |
+| `make shell-db` | Shell del contenedor postgres |
