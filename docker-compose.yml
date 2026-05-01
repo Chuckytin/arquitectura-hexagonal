@@ -1,6 +1,5 @@
 services:
   web:
-    build: .
     container_name: web-api
     ports:
       - "8080:8080"

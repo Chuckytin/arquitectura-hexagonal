@@ -1,5 +1,8 @@
 services:
   web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     environment:
       SPRING_PROFILES_ACTIVE: dev
       POSTGRES_HOST: postgres
