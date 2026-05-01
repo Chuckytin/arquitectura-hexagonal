@@ -16,6 +16,35 @@ La idea no ha sido solo construir una API funcional, sino entender cómo **desac
 - Manejo de archivos (imágenes) como parte de la infraestructura
 - Tests de integración para validar el comportamiento real del sistema
 
+## Infraestructura y despliegue
+
+El proyecto incluye una configuración completa de Docker con soporte para múltiples entornos.
+
+### Entornos
+- **Dev**: credenciales visibles en docker-compose.dev.yml, Adminer disponible en `localhost:8888`
+- **Prod**: credenciales gestionadas via `.env.prod` (excluido del repositorio)
+
+### Requisitos
+- Docker Desktop
+- make (`choco install make` en Windows)
+
+### Comandos disponibles
+
+| Comando | Descripción |
+|---|---|
+| `make dev` | Levanta entorno dev con build |
+| `make dev-up` | Levanta entorno dev sin rebuild |
+| `make prod` | Levanta entorno prod con build |
+| `make prod-up` | Levanta entorno prod sin rebuild |
+| `make down-dev` | Para entorno dev conservando datos |
+| `make down-prod` | Para entorno prod conservando datos |
+| `make down-clean` | Para todo y elimina volúmenes |
+
+### Bases de datos
+Cada entorno inicializa automáticamente dos bases de datos al crear el volumen por primera vez:
+- **Dev**: `web_db` y `web_db_it`
+- **Prod**: `web_app_db` y `web_app_db_it`
+
 ### Objetivo
 
 El objetivo ha sido interiorizar cómo estructurar aplicaciones mantenibles y escalables, donde:
