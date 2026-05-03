@@ -3,6 +3,7 @@ package com.springboot.web.product.infraestructure.database;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
 import com.springboot.web.product.infraestructure.database.mapper.ProductEntityMapper;
+import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,87 +22,61 @@ import static org.mockito.Mockito.*;
 class ProductRepositoryImplTest {
 
     @Mock
+    private QueryProductRepository queryProductRepository;
+
+    @Mock
     private ProductEntityMapper productEntityMapper;
 
     @InjectMocks
     private ProductRepositoryImpl productRepository;
 
-    private Product product1;
-    private ProductEntity productEntity1;
+    private Product product;
+    private ProductEntity productEntity;
 
     @BeforeEach
     void setUp() {
-        // Limpiamos la lista en memoria antes de cada test
-        productRepository.products.clear();
-
-        product1 = Product.builder()
+        product = Product.builder()
                 .id(1L).name("Product 1").description("Description 1").price(10.0)
                 .build();
 
-        productEntity1 = new ProductEntity();
-        productEntity1.setId(1L);
-        productEntity1.setName("Product 1");
+        productEntity = new ProductEntity();
+        productEntity.setId(1L);
+        productEntity.setName("Product 1");
+        productEntity.setDescription("Description 1");
+        productEntity.setPrice(10.0);
     }
+
+    // ------------------------------------------------------------------ upsert
 
     @Test
-    void shouldInsertProductWhenUpsertAndProductNotExists() {
+    void shouldReturnSavedProductWhenUpsert() {
 
         // Arrange
-        when(productEntityMapper.mapToProductEntity(any(Product.class)))
-                .thenAnswer(invocation -> {
-                    System.out.println(">>> mapToProductEntity() llamado - producto nuevo");
-                    return productEntity1;
-                });
+        when(productEntityMapper.mapToProductEntity(product)).thenReturn(productEntity);
+        when(queryProductRepository.save(productEntity)).thenReturn(productEntity);
+        when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
 
         // Act
-        productRepository.upsert(product1);
+        Product result = productRepository.upsert(product);
 
         // Assert
-        assertEquals(1, productRepository.products.size());
-        assertEquals(1L, productRepository.products.getFirst().getId());
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Product 1", result.getName());
 
-        verify(productEntityMapper, times(1)).mapToProductEntity(any(Product.class));
+        verify(productEntityMapper, times(1)).mapToProductEntity(product);
+        verify(queryProductRepository, times(1)).save(productEntity);
+        verify(productEntityMapper, times(1)).mapToProduct(productEntity);
     }
 
-    @Test
-    void shouldUpdateProductWhenUpsertAndProductAlreadyExists() {
-
-        // Arrange
-        productRepository.products.add(productEntity1); // simulamos que ya existe
-
-        ProductEntity updatedEntity = new ProductEntity();
-        updatedEntity.setId(1L);
-        updatedEntity.setName("Product 1 updated");
-
-        Product updatedProduct = Product.builder()
-                .id(1L).name("Product 1 updated").description("desc").price(99.0)
-                .build();
-
-        when(productEntityMapper.mapToProductEntity(any(Product.class)))
-                .thenAnswer(invocation -> {
-                    System.out.println(">>> mapToProductEntity() llamado - producto existente, actualizando");
-                    return updatedEntity;
-                });
-
-        // Act
-        productRepository.upsert(updatedProduct);
-
-        // Assert
-        assertEquals(1, productRepository.products.size()); // no se duplicó
-        assertEquals("Product 1 updated", productRepository.products.getFirst().getName());
-    }
+    // --------------------------------------------------------------- findById
 
     @Test
     void shouldReturnProductWhenFindByIdExists() {
 
         // Arrange
-        productRepository.products.add(productEntity1);
-
-        when(productEntityMapper.mapToProduct(any(ProductEntity.class)))
-                .thenAnswer(invocation -> {
-                    System.out.println(">>> mapToProduct() llamado con id: " + productEntity1.getId());
-                    return product1;
-                });
+        when(queryProductRepository.findById(1L)).thenReturn(Optional.of(productEntity));
+        when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
 
         // Act
         Optional<Product> result = productRepository.findById(1L);
@@ -110,48 +85,57 @@ class ProductRepositoryImplTest {
         assertTrue(result.isPresent());
         assertEquals(1L, result.get().getId());
 
-        verify(productEntityMapper, times(1)).mapToProduct(any(ProductEntity.class));
+        verify(queryProductRepository, times(1)).findById(1L);
+        verify(productEntityMapper, times(1)).mapToProduct(productEntity);
     }
 
     @Test
     void shouldReturnEmptyWhenFindByIdNotExists() {
 
-        // Arrange - lista vacía
+        // Arrange
+        when(queryProductRepository.findById(99L)).thenReturn(Optional.empty());
 
         // Act
         Optional<Product> result = productRepository.findById(99L);
 
         // Assert
         assertTrue(result.isEmpty());
-        System.out.println(">>> findById(99) devolvió Optional.empty() correctamente");
 
+        verify(queryProductRepository, times(1)).findById(99L);
         verify(productEntityMapper, never()).mapToProduct(any(ProductEntity.class));
     }
+
+    // ------------------------------------------------------------- existsById
 
     @Test
     void shouldReturnTrueWhenProductExists() {
 
         // Arrange
-        productRepository.products.add(productEntity1);
+        when(queryProductRepository.existsById(1L)).thenReturn(true);
 
         // Act
         boolean exists = productRepository.existsById(1L);
 
         // Assert
         assertTrue(exists);
-        System.out.println(">>> existsById(1) = true");
+        verify(queryProductRepository, times(1)).existsById(1L);
     }
 
     @Test
     void shouldReturnFalseWhenProductNotExists() {
+
+        // Arrange
+        when(queryProductRepository.existsById(99L)).thenReturn(false);
 
         // Act
         boolean exists = productRepository.existsById(99L);
 
         // Assert
         assertFalse(exists);
-        System.out.println(">>> existsById(99) = false");
+        verify(queryProductRepository, times(1)).existsById(99L);
     }
+
+    // --------------------------------------------------------------- findAll
 
     @Test
     void shouldReturnAllProducts() {
@@ -161,17 +145,11 @@ class ProductRepositoryImplTest {
         productEntity2.setId(2L);
         productEntity2.setName("Product 2");
 
-        productRepository.products.add(productEntity1);
-        productRepository.products.add(productEntity2);
-
         Product product2 = Product.builder().id(2L).name("Product 2").build();
 
-        when(productEntityMapper.mapToProduct(any(ProductEntity.class)))
-                .thenAnswer(invocation -> {
-                    ProductEntity pe = invocation.getArgument(0);
-                    System.out.println(">>> mapToProduct() llamado con id: " + pe.getId());
-                    return pe.getId().equals(1L) ? product1 : product2;
-                });
+        when(queryProductRepository.findAll()).thenReturn(List.of(productEntity, productEntity2));
+        when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
+        when(productEntityMapper.mapToProduct(productEntity2)).thenReturn(product2);
 
         // Act
         List<Product> result = productRepository.findAll();
@@ -180,30 +158,47 @@ class ProductRepositoryImplTest {
         assertEquals(2, result.size());
         assertEquals(List.of(1L, 2L), result.stream().map(Product::getId).toList());
 
+        verify(queryProductRepository, times(1)).findAll();
         verify(productEntityMapper, times(2)).mapToProduct(any(ProductEntity.class));
     }
 
     @Test
-    void shouldDeleteProductById() {
+    void shouldReturnEmptyListWhenNoProducts() {
 
         // Arrange
-        productRepository.products.add(productEntity1);
+        when(queryProductRepository.findAll()).thenReturn(List.of());
+
+        // Act
+        List<Product> result = productRepository.findAll();
+
+        // Assert
+        assertTrue(result.isEmpty());
+        verify(productEntityMapper, never()).mapToProduct(any(ProductEntity.class));
+    }
+
+    // ------------------------------------------------------------- deleteById
+
+    @Test
+    void shouldCallDeleteByIdOnRepository() {
+
+        // Arrange
+        doNothing().when(queryProductRepository).deleteById(1L);
 
         // Act
         productRepository.deleteById(1L);
 
         // Assert
-        assertTrue(productRepository.products.isEmpty());
-        System.out.println(">>> deleteById(1) - lista vacía: " + true);
+        verify(queryProductRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void shouldNotFailWhenDeleteNonExistentProduct() {
 
-        // Arrange - lista vacía
+        // Arrange
+        doNothing().when(queryProductRepository).deleteById(99L);
 
-        // Act & Assert — no debe lanzar excepción
+        // Act & Assert
         assertDoesNotThrow(() -> productRepository.deleteById(99L));
-        System.out.println(">>> deleteById(99) sobre lista vacía no lanzó excepción");
+        verify(queryProductRepository, times(1)).deleteById(99L);
     }
 }

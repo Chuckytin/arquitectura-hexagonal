@@ -1,11 +1,11 @@
 package com.springboot.web.product.application.command.create;
 
 import com.springboot.web.common.mediator.Request;
+import com.springboot.web.product.domain.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Clase CreateProductRequest que representa la solicitud para crear un nuevo producto.
@@ -16,11 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateProductRequest implements Request<CreateProductResponse> {
+public class CreateProductResponse implements Request<Void> {
 
-    private String name;
-    private String description;
-    private Double price;
-    private MultipartFile file;
+    private Product product;
 
 }

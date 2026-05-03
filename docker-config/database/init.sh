@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script de inicialización ejecutado por PostgreSQL al crear el volumen por primera vez.
 # Crea automáticamente una base de datos IT a partir del nombre de la base principal
-# añadiendo el sufijo _it. Ejemplo: web_db → web_db_it.
+# añadiendo el sufijo _it. Ejemplo: web_db -> web_db_it.
 # La variable POSTGRES_DB es inyectada por docker-compose en tiempo de ejecución.
 set -e
 

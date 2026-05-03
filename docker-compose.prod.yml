@@ -4,13 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     env_file:
-      - .env.prod
+      - .env
     environment:
       SPRING_PROFILES_ACTIVE: prod
 
   postgres:
     env_file:
-      - .env.prod
+      - .env
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
       interval: 30s

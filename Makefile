@@ -1,6 +1,14 @@
 # Para la mayoría de casos: make dev-down + make dev es suficiente
 
 # ===========
+# LOCAL
+# ===========
+
+# Levanta solo la base de datos para desarrollo local desde IntelliJ
+local-db:
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres adminer
+
+# ===========
 # DEVELOPMENT
 # ===========
 

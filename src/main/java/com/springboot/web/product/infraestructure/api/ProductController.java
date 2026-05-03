@@ -2,12 +2,14 @@ package com.springboot.web.product.infraestructure.api;
 
 import com.springboot.web.common.mediator.Mediator;
 import com.springboot.web.product.application.command.create.CreateProductRequest;
+import com.springboot.web.product.application.command.create.CreateProductResponse;
 import com.springboot.web.product.application.command.delete.DeleteProductRequest;
 import com.springboot.web.product.application.command.update.UpdateProductRequest;
 import com.springboot.web.product.application.query.getAll.GetAllProductRequest;
 import com.springboot.web.product.application.query.getAll.GetAllProductResponse;
 import com.springboot.web.product.application.query.getById.GetProductByIdRequest;
 import com.springboot.web.product.application.query.getById.GetProductByIdResponse;
+import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.infraestructure.api.dto.CreateProductDto;
 import com.springboot.web.product.infraestructure.api.dto.ProductDto;
 import com.springboot.web.product.infraestructure.api.dto.UpdateProductDto;
@@ -70,15 +72,17 @@ public class ProductController implements ProductApi {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> saveProduct(@ModelAttribute @Valid CreateProductDto createProductdto) {
 
-        log.info("Saving product with id {}", createProductdto.getId());
+        log.info("Saving new product with name {}", createProductdto.getName());
 
         CreateProductRequest request = productMapper.mapToCreateProductRequest(createProductdto);
 
-        mediator.dispatch(request);
+        CreateProductResponse response = mediator.dispatch(request);
 
-        log.info("Saved product with id {}", createProductdto.getId());
+        Product product = response.getProduct();
 
-        return ResponseEntity.created(URI.create("/api/v1/products/".concat(createProductdto.getId().toString()))).build();
+        log.info("Saved product with id {}", product.getId());
+
+        return ResponseEntity.created(URI.create("/api/v1/products/".concat(product.getId().toString()))).build();
     }
 
     @Operation(summary = "Update an existing product", description = "Update the details of an existing product by its ID")

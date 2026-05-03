@@ -4,15 +4,14 @@ import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.port.ProductRepository;
 import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
 import com.springboot.web.product.infraestructure.database.mapper.ProductEntityMapper;
+import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -20,7 +19,7 @@ import java.util.Optional;
 @Slf4j
 public class ProductRepositoryImpl implements ProductRepository {
 
-    public final List<ProductEntity> products = new ArrayList<>();
+    private final QueryProductRepository queryProductRepository;
 
     private final ProductEntityMapper productEntityMapper;
 
@@ -28,10 +27,11 @@ public class ProductRepositoryImpl implements ProductRepository {
      * Actualiza o Crea
      */
     @Override
-    public void upsert(Product product) {
+    public Product upsert(Product product) {
         ProductEntity productEntity = productEntityMapper.mapToProductEntity(product);
-        products.removeIf(p -> Objects.equals(p.getId(), productEntity.getId())); //Con una BBDD esto no existiría, es para las pruebas
-        products.add(productEntity);
+        ProductEntity productEntitySaved = queryProductRepository.save(productEntity);
+
+        return productEntityMapper.mapToProduct(productEntitySaved);
     }
 
     @Cacheable(value = "products", key = "#id")
@@ -39,21 +39,19 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Optional<Product> findById(Long id) {
         log.info("Finding product by id {}", id);
 
-        return products.stream()
-                .filter(productEntity -> productEntity.getId().equals(id))
-                .findFirst()
+        return queryProductRepository.findById(id)
                 .map(productEntityMapper::mapToProduct);
     }
 
     @Override
     public boolean existsById(Long id) {
-        return products.stream()
-                .anyMatch(productEntity -> productEntity.getId().equals(id));
+        return queryProductRepository.existsById(id);
     }
 
     @Override
     public List<Product> findAll() {
-        return products.stream()
+        return queryProductRepository.findAll()
+                .stream()
                 .map(productEntityMapper::mapToProduct)
                 .toList();
     }
@@ -61,7 +59,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @CacheEvict(value = "products", key = "#id")
     @Override
     public void deleteById(Long id) {
-        products.removeIf(product -> product.getId().equals(id));
+        queryProductRepository.deleteById(id);
     }
 
 }

@@ -16,19 +16,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CreateProductHandler implements RequestHandler<CreateProductRequest, Void> {
+public class CreateProductHandler implements RequestHandler<CreateProductRequest, CreateProductResponse> {
 
     private final ProductRepository productRepository;
     private final FileUtils fileUtils;
 
     @Override
-    public Void handle(CreateProductRequest request) {
-
-        Long productId = request.getId();
-
-        if (productRepository.existsById(productId)) {
-            throw new IllegalArgumentException("Product already exists with id " + productId);
-        }
+    public CreateProductResponse handle(CreateProductRequest request) {
 
         String image = null;
 
@@ -37,18 +31,17 @@ public class CreateProductHandler implements RequestHandler<CreateProductRequest
         }
 
         Product product = Product.builder()
-                .id(productId)
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
                 .image(image)
                 .build();
 
-        productRepository.upsert(product);
+        Product storedProduct = productRepository.upsert(product);
 
-        log.info("Product created with id {}", productId);
+        log.info("Product created with id {}", storedProduct.getId());
 
-        return null;
+        return new CreateProductResponse(storedProduct);
     }
 
     @Override

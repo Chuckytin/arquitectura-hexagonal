@@ -17,7 +17,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -41,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
+@ActiveProfiles("test")
 @Slf4j
 class ProductIT {
 
@@ -55,6 +58,8 @@ class ProductIT {
 
     private final RestTemplate restTemplate;
 
+    private Long savedProductId;
+
     String baseUrl;
 
     public ProductIT() {
@@ -65,19 +70,23 @@ class ProductIT {
     void setUp() {
         baseUrl = "http://localhost:" + port;
         log.info(">>> Preparando datos para el test de integración");
-        productRepository.upsert(
+
+        Product saved = productRepository.upsert(
                 Product.builder()
-                        .id(1L).name("Product 1").description("Description 1").price(100.0)
+                        .name("Product 1")
+                        .description("Description 1")
+                        .price(100.0)
                         .build()
         );
+
+        this.savedProductId = saved.getId();
     }
 
     @SneakyThrows
     @AfterEach
     void tearDown() {
         log.info(">>> Limpiando datos tras el test de integración");
-        productRepository.deleteById(1L);
-        productRepository.deleteById(2L);
+        productRepository.deleteById(savedProductId);
 
         Path uploadDir = Path.of("uploads/products");
 
@@ -111,7 +120,7 @@ class ProductIT {
         log.info(">>> Test: GET /api/v1/products/1");
 
         ResponseEntity<ProductDto> response = restTemplate.exchange(
-                baseUrl + "/api/v1/products/1",
+                baseUrl + "/api/v1/products/" + savedProductId,
                 HttpMethod.GET,
                 createAuthEntity(),
                 ProductDto.class);
@@ -166,18 +175,21 @@ class ProductIT {
                 "file", "image.jpeg", "image/jpeg", "image".getBytes()
         );
 
-        mockMvc.perform(
+        MvcResult result = mockMvc.perform(
                 multipart(HttpMethod.POST, "/api/v1/products")
                         .file(file)
-                        .param("id", "2")
                         .param("name", "Product 2")
                         .param("description", "Description 2")
                         .param("price", "150.00")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .with(csrf()) // deshabilita la protección CSRF
-        ).andExpect(status().isCreated());
+        ).andExpect(status().isCreated()).andReturn();
 
-        assertTrue(productRepository.existsById(2L));
+        String location = result.getResponse().getHeader("Location");
+        assertNotNull(location);
+
+        Long generatedId = Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
+        assertTrue(productRepository.existsById(generatedId));
     }
 
     /**
@@ -195,7 +207,7 @@ class ProductIT {
         mockMvc.perform(
                 multipart(HttpMethod.PUT, "/api/v1/products")
                         .file(file)
-                        .param("id", "1")
+                        .param("id", savedProductId.toString())
                         .param("name", "Product 1 updated")
                         .param("description", "Description 1 updated")
                         .param("price", "200.00")
@@ -203,7 +215,7 @@ class ProductIT {
                         .with(csrf())
         ).andExpect(status().isNoContent());
 
-        assertTrue(productRepository.existsById(1L));
+        assertTrue(productRepository.existsById(savedProductId));
     }
 
     /**
@@ -214,11 +226,11 @@ class ProductIT {
     void shouldDeleteProduct() throws Exception {
         log.info(">>> Test: DELETE /api/v1/products/1");
 
-        mockMvc.perform(delete("/api/v1/products/1")
+        mockMvc.perform(delete("/api/v1/products/" + savedProductId)
                         .with(csrf()))
                 .andExpect(status().isAccepted());
 
         Thread.sleep(500);
-        assertFalse(productRepository.existsById(1L));
+        assertFalse(productRepository.existsById(savedProductId));
     }
 }

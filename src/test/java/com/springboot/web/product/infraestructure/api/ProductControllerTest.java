@@ -2,6 +2,7 @@ package com.springboot.web.product.infraestructure.api;
 
 import com.springboot.web.common.mediator.Mediator;
 import com.springboot.web.product.application.command.create.CreateProductRequest;
+import com.springboot.web.product.application.command.create.CreateProductResponse;
 import com.springboot.web.product.application.command.delete.DeleteProductRequest;
 import com.springboot.web.product.application.command.update.UpdateProductRequest;
 import com.springboot.web.product.application.query.getAll.GetAllProductRequest;
@@ -131,33 +132,32 @@ class ProductControllerTest {
 
         // Arrange
         CreateProductDto createProductDto = new CreateProductDto();
-        createProductDto.setId(1L);
         createProductDto.setName("Product 1");
         createProductDto.setDescription("Description 1");
         createProductDto.setPrice(10.0);
 
         CreateProductRequest requestMock = new CreateProductRequest(
-                createProductDto.getId(),
                 createProductDto.getName(),
                 createProductDto.getDescription(),
                 createProductDto.getPrice(),
                 createProductDto.getFile()
         );
 
+        // El producto guardado que devuelve el handler
+        Product savedProduct = Product.builder()
+                .id(1L)
+                .name("Product 1")
+                .description("Description 1")
+                .price(10.0)
+                .build();
+
+        CreateProductResponse createProductResponse = new CreateProductResponse(savedProduct);
+
         when(productMapper.mapToCreateProductRequest(any(CreateProductDto.class)))
-                .thenAnswer(invocation -> {
-                    CreateProductDto dto = invocation.getArgument(0);
-                    System.out.println(">>> Mapper llamado con dto: id=" + dto.getId() + ", name=" + dto.getName());
-                    System.out.println(">>> CreateProductRequest creado: id=" + requestMock.getId());
-                    return requestMock;
-                });
+                .thenReturn(requestMock);
 
         when(mediator.dispatch(any(CreateProductRequest.class)))
-                .thenAnswer(invocation -> {
-                    CreateProductRequest req = invocation.getArgument(0);
-                    System.out.println(">>> Mediator.dispatch() llamado con: id=" + req.getId());
-                    return null;
-                });
+                .thenReturn(createProductResponse);
 
         // Act
         ResponseEntity<Void> response = productController.saveProduct(createProductDto);
