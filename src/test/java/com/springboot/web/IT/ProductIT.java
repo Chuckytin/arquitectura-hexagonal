@@ -20,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -35,10 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Pruebas de integración para el controlador de productos.
- * Estas pruebas verifican el comportamiento de los endpoints REST para la gestión de productos, incluyendo la creación, actualización, eliminación y consulta de productos.
- * Se utiliza un RestTemplate para realizar solicitudes HTTP reales al servidor de pruebas, y MockMvc para pruebas más específicas de los endpoints.
- * La base de datos se prepara antes de cada prueba y se limpia después para asegurar que las pruebas sean independientes y reproducibles.
- * Se incluye una configuración de seguridad de prueba para autenticar las solicitudes a los endpoints protegidos durante las pruebas de integración.
+ * Estas pruebas arrancan el contexto completo de Spring Boot y prueban los endpoints REST utilizando RestTemplate y MockMvc.
+ * Se asegura de que los datos se preparen antes de cada prueba y se limpien después para mantener la independencia de las pruebas.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -56,19 +55,15 @@ class ProductIT {
     @Autowired
     private ProductRepository productRepository;
 
-    private final RestTemplate restTemplate;
-
+    private RestTemplate restTemplate;
     private Long savedProductId;
-
-    String baseUrl;
-
-    public ProductIT() {
-        this.restTemplate = new RestTemplate();
-    }
+    private String baseUrl;
 
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port;
+        restTemplate = new RestTemplate();
+
         log.info(">>> Preparando datos para el test de integración");
 
         Product saved = productRepository.upsert(
@@ -89,15 +84,14 @@ class ProductIT {
         productRepository.deleteById(savedProductId);
 
         Path uploadDir = Path.of("uploads/products");
-
         if (Files.exists(uploadDir)) {
             try (Stream<Path> paths = Files.walk(uploadDir)) {
-                paths
-                        .filter(Files::isRegularFile)
+                paths.filter(Files::isRegularFile)
                         .forEach(file -> {
                             try {
                                 Files.delete(file);
                             } catch (IOException e) {
+                                log.error("Error deleting file: {}", file, e);
                                 throw new RuntimeException(e);
                             }
                         });
@@ -105,10 +99,6 @@ class ProductIT {
         }
     }
 
-    /**
-     * Crea una entidad HTTP con las credenciales de autenticación básica para el usuario "testuser" con contraseña "testpass".
-     * Se utiliza para autenticar las solicitudes a los endpoints protegidos durante las pruebas de integración.
-     */
     private HttpEntity<String> createAuthEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("testuser", "testpass");
@@ -117,7 +107,7 @@ class ProductIT {
 
     @Test
     void shouldReturnProductWhenExists() {
-        log.info(">>> Test: GET /api/v1/products/1");
+        log.info(">>> Test: GET /api/v1/products/{}", savedProductId);
 
         ResponseEntity<ProductDto> response = restTemplate.exchange(
                 baseUrl + "/api/v1/products/" + savedProductId,
@@ -134,17 +124,18 @@ class ProductIT {
 
     @Test
     void shouldReturnNotFoundWhenProductNotExists() {
-        log.info(">>> Test: GET /api/v1/products/99 - esperando 404");
+        log.info(">>> Test: GET /api/v1/products/99999 - esperando 404");
 
         try {
-            ResponseEntity<ProductDto> response = restTemplate.exchange(
-                    baseUrl + "/api/v1/products/99",
+            restTemplate.exchange(
+                    baseUrl + "/api/v1/products/99999",
                     HttpMethod.GET,
                     createAuthEntity(),
                     ProductDto.class);
-            assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("404") || e.getMessage().contains("Not Found"));
+            fail("Should have thrown HttpClientErrorException.NotFound");
+        } catch (HttpClientErrorException.NotFound e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+            log.info("✅ Correctly received 404 error");
         }
     }
 
@@ -163,9 +154,6 @@ class ProductIT {
         assertTrue(response.getBody().length >= 1);
     }
 
-    /**
-     * Se utiliza MockMvc para simular la solicitud multipart/form-data con el archivo de imagen y los parámetros del producto, y se deshabilita la protección CSRF para esta prueba.
-     */
     @Test
     @WithMockUser
     void shouldSaveProductAndPersist() throws Exception {
@@ -182,7 +170,7 @@ class ProductIT {
                         .param("description", "Description 2")
                         .param("price", "150.00")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .with(csrf()) // deshabilita la protección CSRF
+                        .with(csrf())
         ).andExpect(status().isCreated()).andReturn();
 
         String location = result.getResponse().getHeader("Location");
@@ -190,11 +178,11 @@ class ProductIT {
 
         Long generatedId = Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
         assertTrue(productRepository.existsById(generatedId));
+
+        // Limpiar producto creado en la prueba
+        productRepository.deleteById(generatedId);
     }
 
-    /**
-     * Se utiliza MockMvc para simular la solicitud multipart/form-data con el archivo de imagen y los parámetros del producto, y se deshabilita la protección CSRF para esta prueba.
-     */
     @Test
     @WithMockUser
     void shouldUpdateProduct() throws Exception {
@@ -218,13 +206,10 @@ class ProductIT {
         assertTrue(productRepository.existsById(savedProductId));
     }
 
-    /**
-     * Se utiliza MockMvc para simular la solicitud DELETE al endpoint de eliminación de productos, y se deshabilita la protección CSRF para esta prueba.
-     */
     @Test
     @WithMockUser
     void shouldDeleteProduct() throws Exception {
-        log.info(">>> Test: DELETE /api/v1/products/1");
+        log.info(">>> Test: DELETE /api/v1/products/{}", savedProductId);
 
         mockMvc.perform(delete("/api/v1/products/" + savedProductId)
                         .with(csrf()))
