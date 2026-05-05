@@ -2,21 +2,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    naming:
-      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: false
     properties:
       hibernate:
         format_sql: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 10MB
-
-  cache:
-    type: simple
 
 springdoc:
   api-docs:
@@ -32,3 +26,7 @@ management:
   endpoint:
     health:
       show-details: never
+
+logging:
+  level:
+    com.springboot.web: INFO

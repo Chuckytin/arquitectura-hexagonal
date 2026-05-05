@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -22,11 +23,14 @@ import org.springframework.context.annotation.Configuration;
                         url = "${api.docs.license.url}"
                 )
         ),
-        servers = @Server(
-                url = "${api.docs.servers.url}",
-                description = "${api.docs.servers.description}"
-        )
+        servers = {
+                @Server(
+                        url = "${api.docs.servers.url}",
+                        description = "${api.docs.servers.description}"
+                )
+        }
 )
 @Configuration
+@Profile({"dev", "local"})
 public class OpenApiConfig {
 }

@@ -16,6 +16,21 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 20000
 
+  jpa:
+    naming:
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  cache:
+    type: simple
+
   # Flyway (preparado pero desactivado por ahora)
   # flyway:
   #   enabled: true
@@ -27,3 +42,9 @@ management:
     web:
       exposure:
         include: health,info
+
+logging:
+  level:
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%level] [%thread] %logger{36} - %msg%n"
