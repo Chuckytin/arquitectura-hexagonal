@@ -1,13 +1,12 @@
 package com.springboot.web.product.application.query.getAll;
 
-import com.springboot.web.common.mediator.RequestHandler;
+import com.springboot.web.common.application.mediator.RequestHandler;
+import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.port.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Clase GetAllProductHandler que maneja la lógica de negocio para obtener todos los productos.
@@ -26,9 +25,7 @@ public class GetAllProductHandler implements RequestHandler<GetAllProductRequest
 
         log.info("GetAllProductHandler start");
 
-        List<Product> products = productRepository.findAll();
-
-        log.info("Found {} products", products.size());
+        PaginationResult<Product> products = productRepository.findAll(request.getPaginationQuery());
 
         return new GetAllProductResponse(products);
     }

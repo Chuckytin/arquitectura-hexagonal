@@ -1,4 +1,4 @@
-package com.springboot.web.common.exceptions;
+package com.springboot.web.common.infraestructure.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

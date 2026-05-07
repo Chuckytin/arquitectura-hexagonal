@@ -1,6 +1,7 @@
 package com.springboot.web.IT;
 
 import com.springboot.web.IT.config.TestSecurityConfig;
+import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.port.ProductRepository;
 import com.springboot.web.product.infraestructure.api.dto.ProductDto;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -143,15 +145,28 @@ class ProductIT {
     void shouldReturnAllProducts() {
         log.info(">>> Test: GET /api/v1/products");
 
-        ResponseEntity<ProductDto[]> response = restTemplate.exchange(
+        // Usar ParameterizedTypeReference para manejar la respuesta con paginación
+        ParameterizedTypeReference<PaginationResult<ProductDto>> responseType =
+                new ParameterizedTypeReference<>() {
+                };
+
+        ResponseEntity<PaginationResult<ProductDto>> response = restTemplate.exchange(
                 baseUrl + "/api/v1/products",
                 HttpMethod.GET,
                 createAuthEntity(),
-                ProductDto[].class);
+                responseType);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertTrue(response.getBody().length >= 1);
+
+        PaginationResult<ProductDto> paginationResult = response.getBody();
+        assertNotNull(paginationResult.content());
+        assertFalse(paginationResult.content().isEmpty());
+        assertEquals(0, paginationResult.page());
+        assertTrue(paginationResult.totalElements() >= 1);
+
+        log.info(">>> Total elements: {}", paginationResult.totalElements());
+        log.info(">>> Content size: {}", paginationResult.content().size());
     }
 
     @Test

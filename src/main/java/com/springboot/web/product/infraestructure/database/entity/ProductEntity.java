@@ -1,7 +1,7 @@
 package com.springboot.web.product.infraestructure.database.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 /**
  * Clase ProductEntity que representa la entidad de producto en la base de datos.
@@ -9,7 +9,11 @@ import lombok.Data;
  */
 @Entity
 @Table(name = "products")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProductEntity {
 
     @Id
@@ -18,7 +22,7 @@ public class ProductEntity {
 
     @Column(length = 100, nullable = false)
     private String name;
-    
+
     private String description;
 
     @Column(nullable = false)

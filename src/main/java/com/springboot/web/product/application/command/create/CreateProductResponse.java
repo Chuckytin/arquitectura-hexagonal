@@ -1,6 +1,6 @@
 package com.springboot.web.product.application.command.create;
 
-import com.springboot.web.common.mediator.Request;
+import com.springboot.web.common.application.mediator.Request;
 import com.springboot.web.product.domain.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

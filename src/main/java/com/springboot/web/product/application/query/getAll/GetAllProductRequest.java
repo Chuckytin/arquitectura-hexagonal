@@ -1,6 +1,7 @@
 package com.springboot.web.product.application.query.getAll;
 
-import com.springboot.web.common.mediator.Request;
+import com.springboot.web.common.application.mediator.Request;
+import com.springboot.web.common.domain.PaginationQuery;
 import lombok.*;
 
 /**
@@ -15,6 +16,6 @@ import lombok.*;
 @Builder
 public class GetAllProductRequest implements Request<GetAllProductResponse> {
 
-    private Long id;
+    PaginationQuery paginationQuery;
 
 }

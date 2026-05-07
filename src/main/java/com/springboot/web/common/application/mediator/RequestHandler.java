@@ -1,4 +1,4 @@
-package com.springboot.web.common.mediator;
+package com.springboot.web.common.application.mediator;
 
 public interface RequestHandler<T extends Request<R>, R> {
 

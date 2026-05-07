@@ -1,4 +1,4 @@
-package com.springboot.web.common.config;
+package com.springboot.web.common.infraestructure.config;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;

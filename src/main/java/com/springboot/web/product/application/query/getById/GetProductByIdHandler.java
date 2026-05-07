@@ -1,6 +1,6 @@
 package com.springboot.web.product.application.query.getById;
 
-import com.springboot.web.common.mediator.RequestHandler;
+import com.springboot.web.common.application.mediator.RequestHandler;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.exception.ProductNotFoundException;
 import com.springboot.web.product.domain.port.ProductRepository;

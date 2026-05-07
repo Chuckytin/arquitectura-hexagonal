@@ -1,6 +1,7 @@
 package com.springboot.web.product.infraestructure.api;
 
-import com.springboot.web.common.mediator.Mediator;
+import com.springboot.web.common.application.mediator.Mediator;
+import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.application.command.create.CreateProductRequest;
 import com.springboot.web.product.application.command.create.CreateProductResponse;
 import com.springboot.web.product.application.command.delete.DeleteProductRequest;
@@ -44,45 +45,61 @@ class ProductControllerTest {
     @Test
     void shouldReturnAllProducts() {
 
-        GetAllProductResponse responseMock = new GetAllProductResponse(List.of(
-                Product.builder().id(1L).name("Product 1").description("Description 1").price(10.0).build(),
-                Product.builder().id(2L).name("Product 2").description("Description 2").price(20.0).build(),
-                Product.builder().id(3L).name("Product 3").description("Description 3").price(30.0).build(),
-                Product.builder().id(4L).name("Product 4").description("Description 4").price(40.0).build(),
-                Product.builder().id(5L).name("Product 5").description("Description 5").price(50.0).build()
-        ));
+        PaginationResult<Product> paginationResult = new PaginationResult<>(
+                List.of(
+                        Product.builder().id(1L).name("Product 1").description("Description 1").price(10.0).build(),
+                        Product.builder().id(2L).name("Product 2").description("Description 2").price(20.0).build(),
+                        Product.builder().id(3L).name("Product 3").description("Description 3").price(30.0).build(),
+                        Product.builder().id(4L).name("Product 4").description("Description 4").price(40.0).build(),
+                        Product.builder().id(5L).name("Product 5").description("Description 5").price(50.0).build()
+                ),
+                0,
+                5,
+                1,
+                5
+        );
+
+        GetAllProductResponse responseMock =
+                new GetAllProductResponse(paginationResult);
 
         when(mediator.dispatch(any(GetAllProductRequest.class)))
-                .thenAnswer(invocation -> {
-                    System.out.println(">>> Mediator.dispatch() llamado con: " + invocation.getArgument(0).getClass().getSimpleName());
-                    return responseMock;
-                });
+                .thenReturn(responseMock);
 
         when(productMapper.mapToProductDto(any(Product.class)))
                 .thenAnswer(invocation -> {
                     Product p = invocation.getArgument(0);
-                    System.out.println(">>> Mapper llamado con producto: id=" + p.getId() + ", name=" + p.getName());
+
                     ProductDto dto = new ProductDto();
                     dto.setId(p.getId());
-                    System.out.println(">>> DTO creado: id=" + dto.getId());
+
                     return dto;
                 });
 
-        ResponseEntity<List<ProductDto>> response =
-                productController.getAllProducts(5L);
+        ResponseEntity<PaginationResult<ProductDto>> response =
+                productController.getAllProducts(0, 5);
 
-        // Verifica que la respuesta tenga el status code correcto
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        List<ProductDto> products = response.getBody();
+        PaginationResult<ProductDto> result = response.getBody();
 
-        assertNotNull(products);
+        assertNotNull(result);
+
+        List<ProductDto> products = result.content();
+
         assertEquals(5, products.size());
-        assertEquals(List.of(1L, 2L, 3L, 4L, 5L),
-                products.stream().map(ProductDto::getId).toList());
 
-        // Verifica que el mediator se llamó exactamente una vez con el request correcto
-        verify(mediator, times(1)).dispatch(any(GetAllProductRequest.class));
+        assertEquals(
+                List.of(1L, 2L, 3L, 4L, 5L),
+                products.stream().map(ProductDto::getId).toList()
+        );
+
+        assertEquals(0, result.page());
+        assertEquals(5, result.size());
+        assertEquals(1, result.totalPages());
+        assertEquals(5, result.totalElements());
+
+        verify(mediator, times(1))
+                .dispatch(any(GetAllProductRequest.class));
     }
 
     @Test

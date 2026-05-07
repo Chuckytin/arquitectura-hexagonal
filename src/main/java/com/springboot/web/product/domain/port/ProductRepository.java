@@ -1,8 +1,9 @@
 package com.springboot.web.product.domain.port;
 
+import com.springboot.web.common.domain.PaginationQuery;
+import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,8 +19,9 @@ public interface ProductRepository {
 
     boolean existsById(Long id);
 
-    List<Product> findAll();
+    PaginationResult<Product> findAll(PaginationQuery paginationQuery);
 
     void deleteById(Long id);
+
 
 }
