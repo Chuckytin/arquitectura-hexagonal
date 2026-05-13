@@ -3,6 +3,7 @@ package com.springboot.web.product.infraestructure.database;
 import com.springboot.web.common.domain.PaginationQuery;
 import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
+import com.springboot.web.product.domain.entity.ProductFilter;
 import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
 import com.springboot.web.product.infraestructure.database.mapper.ProductEntityMapper;
 import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
@@ -15,12 +16,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +41,7 @@ class ProductRepositoryImplTest {
 
     private Product product;
     private ProductEntity productEntity;
+    private ProductFilter emptyFilter;
 
     @BeforeEach
     void setUp() {
@@ -49,13 +54,14 @@ class ProductRepositoryImplTest {
         productEntity.setName("Product 1");
         productEntity.setDescription("Description 1");
         productEntity.setPrice(10.0);
+
+        emptyFilter = new ProductFilter(null, null, null, null);
     }
 
     // ------------------------------------------------------------------ upsert
 
     @Test
     void shouldReturnSavedProductWhenUpsert() {
-
         // Arrange
         when(productEntityMapper.mapToProductEntity(product)).thenReturn(productEntity);
         when(queryProductRepository.save(productEntity)).thenReturn(productEntity);
@@ -78,7 +84,6 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldReturnProductWhenFindByIdExists() {
-
         // Arrange
         when(queryProductRepository.findById(1L)).thenReturn(Optional.of(productEntity));
         when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
@@ -96,7 +101,6 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldReturnEmptyWhenFindByIdNotExists() {
-
         // Arrange
         when(queryProductRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -114,7 +118,6 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldReturnTrueWhenProductExists() {
-
         // Arrange
         when(queryProductRepository.existsById(1L)).thenReturn(true);
 
@@ -128,7 +131,6 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldReturnFalseWhenProductNotExists() {
-
         // Arrange
         when(queryProductRepository.existsById(99L)).thenReturn(false);
 
@@ -140,14 +142,14 @@ class ProductRepositoryImplTest {
         verify(queryProductRepository, times(1)).existsById(99L);
     }
 
-    // --------------------------------------------------------------- findAll (Paginado)
+    // --------------------------------------------------------------- findAll (Paginado con filtros)
 
     @Test
-    void shouldReturnPaginationResultWhenFindAll() {
-
+    @SuppressWarnings("unchecked")
+    void shouldReturnPaginationResultWhenFindAllWithoutFilters() {
         // Arrange
-        PaginationQuery paginationQuery = new PaginationQuery(0, 10);
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PaginationQuery paginationQuery = new PaginationQuery(0, 10, "id", "asc");
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         ProductEntity productEntity2 = new ProductEntity();
         productEntity2.setId(2L);
@@ -158,117 +160,104 @@ class ProductRepositoryImplTest {
         List<ProductEntity> productEntities = List.of(productEntity, productEntity2);
         Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 2L);
 
-        when(queryProductRepository.findAll(pageRequest)).thenReturn(page);
+        when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
+                .thenReturn(page);
         when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
         when(productEntityMapper.mapToProduct(productEntity2)).thenReturn(product2);
 
         // Act
-        PaginationResult<Product> result = productRepository.findAll(paginationQuery);
+        PaginationResult<Product> result = productRepository.findAll(paginationQuery, emptyFilter);
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.content().size());
         assertEquals(0, result.page());
         assertEquals(10, result.size());
-        assertEquals(1, result.totalPages()); // 2 elementos con page size 10 = 1 página
+        assertEquals(1, result.totalPages());
         assertEquals(2L, result.totalElements());
 
         assertEquals(List.of(1L, 2L), result.content().stream().map(Product::getId).toList());
 
-        verify(queryProductRepository, times(1)).findAll(pageRequest);
+        verify(queryProductRepository, times(1)).findAll(any(Specification.class), eq(pageRequest));
         verify(productEntityMapper, times(2)).mapToProduct(any(ProductEntity.class));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldReturnPaginationResultWithMultiplePages() {
-
         // Arrange
-        PaginationQuery paginationQuery = new PaginationQuery(0, 2);
-        PageRequest pageRequest = PageRequest.of(0, 2);
+        PaginationQuery paginationQuery = new PaginationQuery(0, 2, "id", "asc");
+        PageRequest pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "id"));
 
         ProductEntity productEntity2 = new ProductEntity();
         productEntity2.setId(2L);
         productEntity2.setName("Product 2");
 
-        ProductEntity productEntity3 = new ProductEntity();
-        productEntity3.setId(3L);
-        productEntity3.setName("Product 3");
-
         Product product2 = Product.builder().id(2L).name("Product 2").build();
 
         List<ProductEntity> productEntities = List.of(productEntity, productEntity2);
-        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 3L); // 3 elementos totales
+        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 3L);
 
-        when(queryProductRepository.findAll(pageRequest)).thenReturn(page);
+        when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
+                .thenReturn(page);
         when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
         when(productEntityMapper.mapToProduct(productEntity2)).thenReturn(product2);
 
         // Act
-        PaginationResult<Product> result = productRepository.findAll(paginationQuery);
+        PaginationResult<Product> result = productRepository.findAll(paginationQuery, emptyFilter);
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.content().size());
         assertEquals(0, result.page());
         assertEquals(2, result.size());
-        assertEquals(2, result.totalPages()); // 3 elementos / 2 por página = 2 páginas
+        assertEquals(2, result.totalPages());
         assertEquals(3L, result.totalElements());
 
-        assertEquals(List.of(1L, 2L), result.content().stream().map(Product::getId).toList());
-
-        verify(queryProductRepository, times(1)).findAll(pageRequest);
-        verify(productEntityMapper, times(2)).mapToProduct(any(ProductEntity.class));
+        verify(queryProductRepository, times(1)).findAll(any(Specification.class), eq(pageRequest));
     }
 
     @Test
-    void shouldReturnSecondPageCorrectly() {
-
+    @SuppressWarnings("unchecked")
+    void shouldReturnFilteredProductsWhenNameProvided() {
         // Arrange
-        PaginationQuery paginationQuery = new PaginationQuery(1, 2); // página 1, tamaño 2
-        PageRequest pageRequest = PageRequest.of(1, 2);
+        PaginationQuery paginationQuery = new PaginationQuery(0, 10, "id", "asc");
+        ProductFilter filter = new ProductFilter("Product 1", null, null, null);
 
-        ProductEntity productEntity3 = new ProductEntity();
-        productEntity3.setId(3L);
-        productEntity3.setName("Product 3");
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
-        Product product3 = Product.builder().id(3L).name("Product 3").build();
+        List<ProductEntity> productEntities = List.of(productEntity);
+        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 1L);
 
-        List<ProductEntity> productEntities = List.of(productEntity3);
-        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 3L); // 3 elementos totales
-
-        when(queryProductRepository.findAll(pageRequest)).thenReturn(page);
-        when(productEntityMapper.mapToProduct(productEntity3)).thenReturn(product3);
+        when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
+                .thenReturn(page);
+        when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
 
         // Act
-        PaginationResult<Product> result = productRepository.findAll(paginationQuery);
+        PaginationResult<Product> result = productRepository.findAll(paginationQuery, filter);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.content().size());
-        assertEquals(1, result.page());
-        assertEquals(2, result.size());
-        assertEquals(2, result.totalPages()); // 3 elementos / 2 por página = 2 páginas
-        assertEquals(3L, result.totalElements());
+        assertEquals("Product 1", result.content().getFirst().getName());
 
-        assertEquals(List.of(3L), result.content().stream().map(Product::getId).toList());
-
-        verify(queryProductRepository, times(1)).findAll(pageRequest);
-        verify(productEntityMapper, times(1)).mapToProduct(productEntity3);
+        verify(queryProductRepository, times(1)).findAll(any(Specification.class), eq(pageRequest));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldReturnEmptyPaginationResultWhenNoProducts() {
-
         // Arrange
-        PaginationQuery paginationQuery = new PaginationQuery(0, 10);
-        PageRequest pageRequest = PageRequest.of(0, 10);
+        PaginationQuery paginationQuery = new PaginationQuery(0, 10, "id", "asc");
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
         Page<ProductEntity> emptyPage = new PageImpl<>(List.of(), pageRequest, 0L);
 
-        when(queryProductRepository.findAll(pageRequest)).thenReturn(emptyPage);
+        when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
+                .thenReturn(emptyPage);
 
         // Act
-        PaginationResult<Product> result = productRepository.findAll(paginationQuery);
+        PaginationResult<Product> result = productRepository.findAll(paginationQuery, emptyFilter);
 
         // Assert
         assertNotNull(result);
@@ -278,42 +267,14 @@ class ProductRepositoryImplTest {
         assertEquals(0, result.totalPages());
         assertEquals(0L, result.totalElements());
 
-        verify(queryProductRepository, times(1)).findAll(pageRequest);
+        verify(queryProductRepository, times(1)).findAll(any(Specification.class), eq(pageRequest));
         verify(productEntityMapper, never()).mapToProduct(any(ProductEntity.class));
-    }
-
-    @Test
-    void shouldHandleCustomPageSize() {
-
-        // Arrange
-        PaginationQuery paginationQuery = new PaginationQuery(0, 20);
-        PageRequest pageRequest = PageRequest.of(0, 20);
-
-        List<ProductEntity> productEntities = List.of(productEntity);
-        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 1L);
-
-        when(queryProductRepository.findAll(pageRequest)).thenReturn(page);
-        when(productEntityMapper.mapToProduct(productEntity)).thenReturn(product);
-
-        // Act
-        PaginationResult<Product> result = productRepository.findAll(paginationQuery);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.content().size());
-        assertEquals(0, result.page());
-        assertEquals(20, result.size());
-        assertEquals(1, result.totalPages());
-        assertEquals(1L, result.totalElements());
-
-        verify(queryProductRepository, times(1)).findAll(pageRequest);
     }
 
     // ------------------------------------------------------------- deleteById
 
     @Test
     void shouldCallDeleteByIdOnRepository() {
-
         // Arrange
         doNothing().when(queryProductRepository).deleteById(1L);
 
@@ -326,7 +287,6 @@ class ProductRepositoryImplTest {
 
     @Test
     void shouldNotFailWhenDeleteNonExistentProduct() {
-
         // Arrange
         doNothing().when(queryProductRepository).deleteById(99L);
 

@@ -1,9 +1,8 @@
 package com.springboot.web.product.infraestructure.database.repository;
 
 import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface QueryProductRepository extends JpaRepository<ProductEntity, Long> {
+public interface QueryProductRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
 
     boolean existsByName(String name);
 
@@ -23,7 +22,7 @@ public interface QueryProductRepository extends JpaRepository<ProductEntity, Lon
 
     long countByPrice(Double price);
 
-    Page<ProductEntity> findAll(Pageable pageable);
+    //Page<ProductEntity> findAll(Pageable pageable, Specification<ProductEntity> specification);
 
     @Modifying
     @Query("UPDATE ProductEntity p SET p.price = p.price * :percent")

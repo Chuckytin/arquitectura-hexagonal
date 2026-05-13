@@ -76,7 +76,7 @@ class ProductControllerTest {
                 });
 
         ResponseEntity<PaginationResult<ProductDto>> response =
-                productController.getAllProducts(0, 5);
+                productController.getAllProducts(0, 5, "id", "asc", "", "", 0.0, 100.0);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

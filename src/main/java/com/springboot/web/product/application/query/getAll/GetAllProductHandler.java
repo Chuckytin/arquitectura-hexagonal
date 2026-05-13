@@ -25,7 +25,7 @@ public class GetAllProductHandler implements RequestHandler<GetAllProductRequest
 
         log.info("GetAllProductHandler start");
 
-        PaginationResult<Product> products = productRepository.findAll(request.getPaginationQuery());
+        PaginationResult<Product> products = productRepository.findAll(request.getPaginationQuery(), request.getProductFilter());
 
         return new GetAllProductResponse(products);
     }
