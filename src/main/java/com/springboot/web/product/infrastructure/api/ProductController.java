@@ -1,4 +1,4 @@
-package com.springboot.web.product.infraestructure.api;
+package com.springboot.web.product.infrastructure.api;
 
 import com.springboot.web.common.application.mediator.Mediator;
 import com.springboot.web.common.domain.PaginationQuery;
@@ -13,10 +13,10 @@ import com.springboot.web.product.application.query.getById.GetProductByIdReques
 import com.springboot.web.product.application.query.getById.GetProductByIdResponse;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.entity.ProductFilter;
-import com.springboot.web.product.infraestructure.api.dto.CreateProductDto;
-import com.springboot.web.product.infraestructure.api.dto.ProductDto;
-import com.springboot.web.product.infraestructure.api.dto.UpdateProductDto;
-import com.springboot.web.product.infraestructure.api.mapper.ProductMapper;
+import com.springboot.web.product.infrastructure.api.dto.CreateProductDto;
+import com.springboot.web.product.infrastructure.api.dto.ProductDto;
+import com.springboot.web.product.infrastructure.api.dto.UpdateProductDto;
+import com.springboot.web.product.infrastructure.api.mapper.ProductMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

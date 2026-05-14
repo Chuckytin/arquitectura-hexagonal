@@ -1,10 +1,11 @@
-package com.springboot.web.product.infraestructure.database.entity;
+package com.springboot.web.product.infrastructure.database.entity;
 
+import com.springboot.web.productdetail.infrastructure.database.entity.ProductDetailEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * Clase ProductEntity que representa la entidad de producto en la base de datos.
+ * Clase ProductEntity que representa la entidad de products en la base de datos.
  * Se utiliza para mapear los datos de la base de datos a objetos Java.
  */
 @Entity
@@ -29,5 +30,12 @@ public class ProductEntity {
     private Double price;
 
     private String image;
+
+    /**
+     * Usamos fetch = FetchType.LAZY para obtener el atributo de product_detail_id solo cuando se accede a él.
+     */
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_detail_id")
+    private ProductDetailEntity productDetailEntity;
 
 }

@@ -1,4 +1,4 @@
-package com.springboot.web.product.infraestructure.api.dto;
+package com.springboot.web.product.infrastructure.api.dto;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -11,15 +11,13 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Clase UpdateProductDto que representa lo que se espera recibir en la solicitud para actualizar un producto existente.
+ * Clase CreateProductDto que representa lo que se espera recibir en la solicitud para crear un nuevo producto.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateProductDto {
-
-    private Long id;
+public class CreateProductDto {
 
     @NotBlank
     private String name;

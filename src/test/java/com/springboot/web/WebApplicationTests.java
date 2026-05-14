@@ -1,6 +1,6 @@
 package com.springboot.web;
 
-import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
+import com.springboot.web.product.infrastructure.database.repository.QueryProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;

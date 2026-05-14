@@ -1,6 +1,6 @@
 package com.springboot.web.product.application.scheduling;
 
-import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
+import com.springboot.web.product.infrastructure.database.repository.QueryProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,11 +1,11 @@
-package com.springboot.web.product.infraestructure.database.seeder;
+package com.springboot.web.product.infrastructure.database.seeder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.web.product.domain.entity.Product;
-import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
-import com.springboot.web.product.infraestructure.database.mapper.ProductEntityMapper;
-import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
+import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
+import com.springboot.web.product.infrastructure.database.mapper.ProductEntityMapper;
+import com.springboot.web.product.infrastructure.database.repository.QueryProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;

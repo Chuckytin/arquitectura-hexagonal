@@ -1,7 +1,11 @@
-package com.springboot.web.product.infraestructure.database.entity;
+package com.springboot.web.product.infrastructure.database.specification;
 
+import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * Especificaciones de JPA para la búsqueda dinámica de productos.
+ */
 public class ProductSpecification {
 
     public static Specification<ProductEntity> byName(String name) {

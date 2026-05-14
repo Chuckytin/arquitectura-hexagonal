@@ -1,10 +1,10 @@
-package com.springboot.web.product.infraestructure.database.repository;
+package com.springboot.web.product.infrastructure.database.repository;
 
-import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -22,9 +22,13 @@ public interface QueryProductRepository extends JpaRepository<ProductEntity, Lon
 
     long countByPrice(Double price);
 
-    //Page<ProductEntity> findAll(Pageable pageable, Specification<ProductEntity> specification);
+    Page<ProductEntity> findAll(Specification<ProductEntity> specification, Pageable pageable);
 
     @Modifying
     @Query("UPDATE ProductEntity p SET p.price = p.price * :percent")
     int updateAllPricesByPercent(@Param("percent") double percent);
+
+    @EntityGraph(attributePaths = {"productDetailEntity"})
+    Optional<ProductEntity> findById(Long id);
+
 }

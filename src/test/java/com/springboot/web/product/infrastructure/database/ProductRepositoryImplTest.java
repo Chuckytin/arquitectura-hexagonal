@@ -1,12 +1,12 @@
-package com.springboot.web.product.infraestructure.database;
+package com.springboot.web.product.infrastructure.database;
 
 import com.springboot.web.common.domain.PaginationQuery;
 import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.entity.ProductFilter;
-import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
-import com.springboot.web.product.infraestructure.database.mapper.ProductEntityMapper;
-import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
+import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
+import com.springboot.web.product.infrastructure.database.mapper.ProductEntityMapper;
+import com.springboot.web.product.infrastructure.database.repository.QueryProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

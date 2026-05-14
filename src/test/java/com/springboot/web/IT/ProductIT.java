@@ -4,7 +4,7 @@ import com.springboot.web.IT.config.TestSecurityConfig;
 import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.port.ProductRepository;
-import com.springboot.web.product.infraestructure.api.dto.ProductDto;
+import com.springboot.web.product.infrastructure.api.dto.ProductDto;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;

@@ -1,9 +1,9 @@
-package com.springboot.web.product.infraestructure.api;
+package com.springboot.web.product.infrastructure.api;
 
 import com.springboot.web.common.domain.PaginationResult;
-import com.springboot.web.product.infraestructure.api.dto.CreateProductDto;
-import com.springboot.web.product.infraestructure.api.dto.ProductDto;
-import com.springboot.web.product.infraestructure.api.dto.UpdateProductDto;
+import com.springboot.web.product.infrastructure.api.dto.CreateProductDto;
+import com.springboot.web.product.infrastructure.api.dto.ProductDto;
+import com.springboot.web.product.infrastructure.api.dto.UpdateProductDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

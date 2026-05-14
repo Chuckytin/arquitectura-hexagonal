@@ -1,0 +1,38 @@
+package com.springboot.web.product.infrastructure.api.mapper;
+
+import com.springboot.web.product.application.command.create.CreateProductRequest;
+import com.springboot.web.product.application.command.update.UpdateProductRequest;
+import com.springboot.web.product.domain.entity.Product;
+import com.springboot.web.product.infrastructure.api.dto.CreateProductDto;
+import com.springboot.web.product.infrastructure.api.dto.ProductDto;
+import com.springboot.web.product.infrastructure.api.dto.UpdateProductDto;
+import org.mapstruct.*;
+
+/**
+ * Mapper entre DTOs de la capa API y objetos del dominio/aplicación.
+ * unmappedSourcePolicy = ERROR garantiza que cualquier campo nuevo que se añada
+ * a los objetos fuente rompa en compilación si no tiene mapeo explícito, evitando pérdidas silenciosas de datos.
+ * ---
+ * Si se añade un nuevo campo a ProductDto que venga de un objeto anidado de Product
+ * (como productDetail.provider), se seguirá el mismo patrón:
+ * - @Mapping(target = "nuevocampo", source = "objetoAnidado.nuevocampo")
+ * - Se añade "objetoAnidado" a ignoreUnmappedSourceProperties si no todos sus campos tienen destino en el DTO.
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedSourcePolicy = ReportingPolicy.ERROR)
+public interface ProductMapper {
+
+    CreateProductRequest mapToCreateProductRequest(CreateProductDto createProductDto);
+
+    UpdateProductRequest mapToUpdateProductRequest(UpdateProductDto updateProductDto);
+
+    /**
+     * @BeanMapping ignora el resto de campos de productDetail (specifications,
+     * warranty...) que no tienen destino en ProductDto, evitando error de
+     * unmappedSourcePolicy. Si en el futuro se quieren exponer más campos de
+     * productDetail en el DTO, se añade un @Mapping por cada uno y se retira de ignoreUnmappedSourceProperties.
+     */
+    @Mapping(target = "provider", source = "productDetail.provider")
+    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail"})
+    ProductDto mapToProductDto(Product product);
+
+}

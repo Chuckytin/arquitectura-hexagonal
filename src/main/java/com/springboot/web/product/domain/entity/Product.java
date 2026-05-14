@@ -1,5 +1,6 @@
 package com.springboot.web.product.domain.entity;
 
+import com.springboot.web.productdetail.domain.ProductDetail;
 import lombok.*;
 
 import java.util.Objects;
@@ -16,6 +17,8 @@ public class Product {
     private String description;
     private Double price;
     private String image;
+
+    private ProductDetail productDetail;
 
     @Override
     public boolean equals(Object o) {

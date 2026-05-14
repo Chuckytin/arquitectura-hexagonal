@@ -1,14 +1,14 @@
-package com.springboot.web.product.infraestructure.database;
+package com.springboot.web.product.infrastructure.database;
 
 import com.springboot.web.common.domain.PaginationQuery;
 import com.springboot.web.common.domain.PaginationResult;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.entity.ProductFilter;
 import com.springboot.web.product.domain.port.ProductRepository;
-import com.springboot.web.product.infraestructure.database.entity.ProductEntity;
-import com.springboot.web.product.infraestructure.database.entity.ProductSpecification;
-import com.springboot.web.product.infraestructure.database.mapper.ProductEntityMapper;
-import com.springboot.web.product.infraestructure.database.repository.QueryProductRepository;
+import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
+import com.springboot.web.product.infrastructure.database.mapper.ProductEntityMapper;
+import com.springboot.web.product.infrastructure.database.repository.QueryProductRepository;
+import com.springboot.web.product.infrastructure.database.specification.ProductSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;

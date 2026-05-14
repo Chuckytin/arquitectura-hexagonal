@@ -1,4 +1,4 @@
-package com.springboot.web.product.infraestructure.api.dto;
+package com.springboot.web.product.infrastructure.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,4 +20,5 @@ public class ProductDto {
     private Double price;
     private String image;
 
+    private String provider;
 }

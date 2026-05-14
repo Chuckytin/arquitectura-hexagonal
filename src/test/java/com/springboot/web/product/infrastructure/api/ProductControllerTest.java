@@ -1,4 +1,4 @@
-package com.springboot.web.product.infraestructure.api;
+package com.springboot.web.product.infrastructure.api;
 
 import com.springboot.web.common.application.mediator.Mediator;
 import com.springboot.web.common.domain.PaginationResult;
@@ -11,10 +11,10 @@ import com.springboot.web.product.application.query.getAll.GetAllProductResponse
 import com.springboot.web.product.application.query.getById.GetProductByIdRequest;
 import com.springboot.web.product.application.query.getById.GetProductByIdResponse;
 import com.springboot.web.product.domain.entity.Product;
-import com.springboot.web.product.infraestructure.api.dto.CreateProductDto;
-import com.springboot.web.product.infraestructure.api.dto.ProductDto;
-import com.springboot.web.product.infraestructure.api.dto.UpdateProductDto;
-import com.springboot.web.product.infraestructure.api.mapper.ProductMapper;
+import com.springboot.web.product.infrastructure.api.dto.CreateProductDto;
+import com.springboot.web.product.infrastructure.api.dto.ProductDto;
+import com.springboot.web.product.infrastructure.api.dto.UpdateProductDto;
+import com.springboot.web.product.infrastructure.api.mapper.ProductMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
