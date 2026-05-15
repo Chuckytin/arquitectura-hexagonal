@@ -28,7 +28,7 @@ public interface QueryProductRepository extends JpaRepository<ProductEntity, Lon
     @Query("UPDATE ProductEntity p SET p.price = p.price * :percent")
     int updateAllPricesByPercent(@Param("percent") double percent);
 
-    @EntityGraph(attributePaths = {"productDetailEntity"})
+    @EntityGraph(attributePaths = {"productDetailEntity", "reviewsEntity"})
     Optional<ProductEntity> findById(Long id);
 
 }

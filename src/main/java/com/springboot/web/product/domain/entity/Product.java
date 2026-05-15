@@ -1,8 +1,10 @@
 package com.springboot.web.product.domain.entity;
 
-import com.springboot.web.productdetail.domain.ProductDetail;
+import com.springboot.web.productdetail.domain.entity.ProductDetail;
+import com.springboot.web.review.domain.entity.Review;
 import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -19,6 +21,8 @@ public class Product {
     private String image;
 
     private ProductDetail productDetail;
+
+    private List<Review> reviews;
 
     @Override
     public boolean equals(Object o) {

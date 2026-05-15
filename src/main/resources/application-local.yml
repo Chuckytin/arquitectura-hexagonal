@@ -11,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # Cuando se use Flyway, cambiar a 'none'
+      ddl-auto: create-drop  # Cuando se use Flyway, cambiar a 'none'
     show-sql: true
     properties:
       hibernate:

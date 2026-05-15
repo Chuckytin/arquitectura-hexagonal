@@ -3,6 +3,7 @@ package com.springboot.web.product.infrastructure.database.mapper;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
 import com.springboot.web.productdetail.infrastructure.database.mapper.ProductDetailEntityMapper;
+import com.springboot.web.review.infrastructure.mapper.ReviewEntityMapper;
 import org.mapstruct.*;
 
 /**
@@ -19,7 +20,7 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedSourcePolicy = ReportingPolicy.ERROR,
-        uses = {ProductDetailEntityMapper.class}
+        uses = {ProductDetailEntityMapper.class, ReviewEntityMapper.class}
 )
 public interface ProductEntityMapper {
 
@@ -30,6 +31,7 @@ public interface ProductEntityMapper {
      */
     @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail"})
     @Mapping(target = "productDetailEntity", source = "productDetail")
+    @Mapping(target = "reviewsEntity", source = "reviews")
     ProductEntity mapToProductEntity(Product product);
 
     /**
@@ -38,5 +40,19 @@ public interface ProductEntityMapper {
      */
     @BeanMapping(ignoreUnmappedSourceProperties = {"productDetailEntity"})
     @Mapping(target = "productDetail", source = "productDetailEntity")
+    @Mapping(target = "reviews", source = "reviewsEntity")
     Product mapToProduct(ProductEntity productEntity);
+
+    /**
+     * Establece la relación inversa review - product después del mapeo automático.
+     * Sin esto, las reviews se guardan con product_id = NULL porque MapStruct no maneja
+     * automáticamente las relaciones bidireccionales de JPA.
+     */
+    @AfterMapping
+    default void linkReviews(@MappingTarget ProductEntity productEntity, Product product) {
+        if (productEntity.getReviewsEntity() != null) {
+            productEntity.getReviewsEntity().forEach(review -> review.setProductEntity(productEntity));
+        }
+    }
+
 }

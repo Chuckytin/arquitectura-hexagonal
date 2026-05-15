@@ -1,8 +1,12 @@
 package com.springboot.web.product.infrastructure.database.entity;
 
 import com.springboot.web.productdetail.infrastructure.database.entity.ProductDetailEntity;
+import com.springboot.web.review.infrastructure.entity.ReviewEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase ProductEntity que representa la entidad de products en la base de datos.
@@ -37,5 +41,9 @@ public class ProductEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_detail_id")
     private ProductDetailEntity productDetailEntity;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<ReviewEntity> reviewsEntity = new ArrayList<>();
 
 }

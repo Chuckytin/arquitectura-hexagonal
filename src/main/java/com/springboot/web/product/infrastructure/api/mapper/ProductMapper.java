@@ -6,6 +6,8 @@ import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.infrastructure.api.dto.CreateProductDto;
 import com.springboot.web.product.infrastructure.api.dto.ProductDto;
 import com.springboot.web.product.infrastructure.api.dto.UpdateProductDto;
+import com.springboot.web.review.domain.entity.Review;
+import com.springboot.web.review.infrastructure.api.dto.ReviewDto;
 import org.mapstruct.*;
 
 /**
@@ -34,5 +36,12 @@ public interface ProductMapper {
     @Mapping(target = "provider", source = "productDetail.provider")
     @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail"})
     ProductDto mapToProductDto(Product product);
+
+    /**
+     * Mapea la lista de reviews dentro de mapToProductDto.
+     * Review.product es circular y no tiene destino en ReviewDto, se ignora en source.
+     */
+    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
+    ReviewDto mapToReviewDto(Review review);
 
 }

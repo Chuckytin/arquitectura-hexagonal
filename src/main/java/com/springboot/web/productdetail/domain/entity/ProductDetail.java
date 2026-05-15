@@ -1,4 +1,4 @@
-package com.springboot.web.productdetail.domain;
+package com.springboot.web.productdetail.domain.entity;
 
 import com.springboot.web.product.domain.entity.Product;
 import lombok.*;

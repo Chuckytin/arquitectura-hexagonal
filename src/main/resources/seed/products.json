@@ -8,7 +8,21 @@
       "specifications": "Cherry MX Red switches, 2.4GHz wireless connectivity, 1ms response time",
       "warranty": "2 years limited manufacturer warranty",
       "provider": "Corsair Gaming"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Excellent keyboard, great tactile feedback",
+        "score": 5
+      },
+      {
+        "comment": "Battery life could be better, but overall good",
+        "score": 4
+      },
+      {
+        "comment": "Cherry MX Red switches feel amazing for gaming",
+        "score": 5
+      }
+    ]
   },
   {
     "name": "Noise Cancelling Headphones",
@@ -19,7 +33,17 @@
       "specifications": "40mm drivers, 30-hour battery life, Bluetooth 5.0",
       "warranty": "1 year limited warranty",
       "provider": "Sony Electronics"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Best noise cancellation I've ever tried",
+        "score": 5
+      },
+      {
+        "comment": "Comfortable for long sessions",
+        "score": 4
+      }
+    ]
   },
   {
     "name": "4K Webcam with Autofocus",
@@ -30,7 +54,25 @@
       "specifications": "4K/30fps, autofocus, 90-degree field of view",
       "warranty": "2 years warranty against defects",
       "provider": "Logitech"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Crystal clear video quality",
+        "score": 5
+      },
+      {
+        "comment": "Autofocus works perfectly",
+        "score": 5
+      },
+      {
+        "comment": "A bit expensive but worth it",
+        "score": 4
+      },
+      {
+        "comment": "Plug and play, no drivers needed",
+        "score": 5
+      }
+    ]
   },
   {
     "name": "Ergonomic Office Chair",
@@ -41,7 +83,17 @@
       "specifications": "Weight capacity: 300lbs, adjustable height, lumbar support",
       "warranty": "5 years on parts and materials",
       "provider": "Herman Miller"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Back pain disappeared after using this chair",
+        "score": 5
+      },
+      {
+        "comment": "Very sturdy and well built",
+        "score": 5
+      }
+    ]
   },
   {
     "name": "Standing Desk Converter",
@@ -52,7 +104,17 @@
       "specifications": "Height range 5.9 to 19.7, supports up to 33lbs",
       "warranty": "3 years manufacturer warranty",
       "provider": "VIVO"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Easy to assemble and use",
+        "score": 4
+      },
+      {
+        "comment": "Smooth height adjustment mechanism",
+        "score": 4
+      }
+    ]
   },
   {
     "name": "USB-C Docking Station",
@@ -63,7 +125,21 @@
       "specifications": "11 ports, 100W power delivery, 4K@60Hz display",
       "warranty": "18 months warranty",
       "provider": "CalDigit"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Works perfectly with my MacBook",
+        "score": 5
+      },
+      {
+        "comment": "All ports work as expected",
+        "score": 4
+      },
+      {
+        "comment": "Charges laptop while using peripherals",
+        "score": 5
+      }
+    ]
   },
   {
     "name": "1080p Portable Monitor",
@@ -74,7 +150,17 @@
       "specifications": "15.6 inch IPS, 1920x1080, USB-C powered",
       "warranty": "1 year limited warranty",
       "provider": "ASUS"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Great for dual monitor setup while traveling",
+        "score": 5
+      },
+      {
+        "comment": "Single USB-C cable for power and video",
+        "score": 5
+      }
+    ]
   },
   {
     "name": "Silent Wireless Mouse",
@@ -85,7 +171,17 @@
       "specifications": "12000 DPI, silent switches, 6 programmable buttons",
       "warranty": "2 years hardware warranty",
       "provider": "Logitech"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Truly silent clicks, perfect for library",
+        "score": 5
+      },
+      {
+        "comment": "Battery lasts months",
+        "score": 4
+      }
+    ]
   },
   {
     "name": "Smart LED Desk Lamp",
@@ -96,7 +192,21 @@
       "specifications": "Adjustable color temperature 2700K-6500K, 5 brightness levels",
       "warranty": "1 year warranty",
       "provider": "BenQ"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Perfect for late night work",
+        "score": 5
+      },
+      {
+        "comment": "Touch controls are very responsive",
+        "score": 4
+      },
+      {
+        "comment": "Good value for money",
+        "score": 4
+      }
+    ]
   },
   {
     "name": "USB Microphone",
@@ -107,6 +217,16 @@
       "specifications": "48kHz/16bit, cardioid pattern, USB plug & play",
       "warranty": "2 years limited warranty",
       "provider": "Blue Microphones"
-    }
+    },
+    "reviews": [
+      {
+        "comment": "Studio quality sound for podcasts",
+        "score": 5
+      },
+      {
+        "comment": "Easy setup, no interface needed",
+        "score": 5
+      }
+    ]
   }
 ]

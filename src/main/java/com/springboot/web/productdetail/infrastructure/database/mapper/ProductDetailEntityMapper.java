@@ -1,6 +1,6 @@
 package com.springboot.web.productdetail.infrastructure.database.mapper;
 
-import com.springboot.web.productdetail.domain.ProductDetail;
+import com.springboot.web.productdetail.domain.entity.ProductDetail;
 import com.springboot.web.productdetail.infrastructure.database.entity.ProductDetailEntity;
 import org.mapstruct.*;
 
