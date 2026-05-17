@@ -81,14 +81,14 @@ public class ProductSeeder implements CommandLineRunner {
                             .description(dto.getDescription())
                             .price(dto.getPrice())
                             .image(dto.getImage())
-                            .productDetailEntity(dto.getProductDetail())
-                            .reviewsEntity(dto.getReviews())
-                            .categoriesEntity(persistedCategories)
+                            .productDetail(dto.getProductDetail())
+                            .reviews(dto.getReviews())
+                            .categories(persistedCategories)
                             .build();
 
                     // Establece la FK product_id en cada review
-                    productEntity.getReviewsEntity()
-                            .forEach(review -> review.setProductEntity(productEntity));
+                    productEntity.getReviews()
+                            .forEach(review -> review.setProduct(productEntity));
 
                     return productEntity;
                 })

@@ -21,8 +21,8 @@ public class CategoryEntity {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "categoriesEntity")
-    private List<ProductEntity> productsEntity;
+    @ManyToMany(mappedBy = "categories")
+    private List<ProductEntity> products;
 
     @Override
     public boolean equals(Object o) {

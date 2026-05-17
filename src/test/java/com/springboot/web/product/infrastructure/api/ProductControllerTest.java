@@ -15,6 +15,8 @@ import com.springboot.web.product.infrastructure.api.dto.CreateProductDto;
 import com.springboot.web.product.infrastructure.api.dto.ProductDto;
 import com.springboot.web.product.infrastructure.api.dto.UpdateProductDto;
 import com.springboot.web.product.infrastructure.api.mapper.ProductMapper;
+import com.springboot.web.review.domain.entity.Review;
+import com.springboot.web.review.infrastructure.api.dto.ReviewDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -190,36 +192,43 @@ class ProductControllerTest {
 
     @Test
     void shouldUpdateProduct() {
-
         // Arrange
+        ReviewDto reviewDto = new ReviewDto();
+        reviewDto.setId(1L);
+        reviewDto.setComment("Comment");
+        reviewDto.setScore(5);
+
         UpdateProductDto updateProductDto = new UpdateProductDto();
         updateProductDto.setId(1L);
         updateProductDto.setName("Product 1 updated");
         updateProductDto.setDescription("Description 1 updated");
         updateProductDto.setPrice(99.0);
+        updateProductDto.setProvider("Provider 1");
+        updateProductDto.setReview(reviewDto);
+        updateProductDto.setCategoryId(1L);
 
-        UpdateProductRequest requestMock = new UpdateProductRequest(
-                updateProductDto.getId(),
-                updateProductDto.getName(),
-                updateProductDto.getDescription(),
-                updateProductDto.getPrice(),
-                updateProductDto.getFile()
-        );
+        // Crear el request esperado
+        UpdateProductRequest expectedRequest = new UpdateProductRequest();
+        expectedRequest.setId(1L);
+        expectedRequest.setName("Product 1 updated");
+        expectedRequest.setDescription("Description 1 updated");
+        expectedRequest.setPrice(99.0);
+        expectedRequest.setProvider("Provider 1");
+        expectedRequest.setCategoryId(1L);
 
-        when(productMapper.mapToUpdateProductRequest(any(UpdateProductDto.class)))
-                .thenAnswer(invocation -> {
-                    UpdateProductDto dto = invocation.getArgument(0);
-                    System.out.println(">>> Mapper llamado con dto: id=" + dto.getId() + ", name=" + dto.getName());
-                    System.out.println(">>> UpdateProductRequest creado: id=" + requestMock.getId());
-                    return requestMock;
-                });
+        Review review = new Review();
+        review.setId(1L);
+        review.setComment("Comment");
+        review.setScore(5);
+        expectedRequest.setReview(review);
 
+        // Mockear el mapper
+        when(productMapper.mapToUpdateProductRequest(updateProductDto))
+                .thenReturn(expectedRequest);
+
+        // Mockear el mediator
         when(mediator.dispatch(any(UpdateProductRequest.class)))
-                .thenAnswer(invocation -> {
-                    UpdateProductRequest req = invocation.getArgument(0);
-                    System.out.println(">>> Mediator.dispatch() llamado con: id=" + req.getId());
-                    return null;
-                });
+                .thenReturn(null);
 
         // Act
         ResponseEntity<Void> response = productController.updateProduct(updateProductDto);
@@ -228,8 +237,9 @@ class ProductControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         assertNull(response.getBody());
 
-        verify(productMapper, times(1)).mapToUpdateProductRequest(any(UpdateProductDto.class));
-        verify(mediator, times(1)).dispatch(any(UpdateProductRequest.class));
+        // Verificaciones
+        verify(productMapper, times(1)).mapToUpdateProductRequest(updateProductDto);
+        verify(mediator, times(1)).dispatch(expectedRequest);
     }
 
     @Test

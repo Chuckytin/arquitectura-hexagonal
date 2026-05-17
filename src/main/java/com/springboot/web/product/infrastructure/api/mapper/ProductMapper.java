@@ -47,6 +47,9 @@ public interface ProductMapper {
     @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
     ReviewDto mapToReviewDto(Review review);
 
+    @Mapping(target = "product", ignore = true)
+    Review mapToReview(ReviewDto reviewDto);
+
     /**
      * Extrae solo el nombre de Category para List<String> en ProductDto.
      * Category.products es circular y no tiene destino en String, se ignora.

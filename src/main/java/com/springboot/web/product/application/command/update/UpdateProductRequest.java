@@ -1,11 +1,11 @@
 package com.springboot.web.product.application.command.update;
 
 import com.springboot.web.common.application.mediator.Request;
+import com.springboot.web.review.domain.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Clase UpdateProductRequest que representa la solicitud para actualizar un producto existente.
@@ -22,6 +22,9 @@ public class UpdateProductRequest implements Request<Void> {
     private String name;
     private String description;
     private Double price;
-    private MultipartFile file;
+
+    private String provider;
+    private Review review; //capa de application
+    private Long categoryId;
 
 }

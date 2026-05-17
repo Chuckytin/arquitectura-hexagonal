@@ -1,12 +1,18 @@
 package com.springboot.web.product.application.command.update;
 
+import com.springboot.web.category.domain.entity.Category;
+import com.springboot.web.category.infrastructure.database.mapper.CategoryEntityMapper;
+import com.springboot.web.category.infrastructure.database.repository.QueryCategoryRepository;
 import com.springboot.web.common.application.mediator.RequestHandler;
-import com.springboot.web.common.infraestructure.util.FileUtils;
 import com.springboot.web.product.domain.entity.Product;
+import com.springboot.web.product.domain.exception.ProductNotFoundException;
 import com.springboot.web.product.domain.port.ProductRepository;
+import com.springboot.web.productdetail.domain.entity.ProductDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 /**
  * Clase UpdateProductHandler que maneja la lógica de negocio para actualizar un producto existente.
@@ -19,45 +25,45 @@ import org.springframework.stereotype.Service;
 public class UpdateProductHandler implements RequestHandler<UpdateProductRequest, Void> {
 
     private final ProductRepository productRepository;
-    private final FileUtils fileUtils;
+    private final QueryCategoryRepository queryCategoryRepository;
+    private final CategoryEntityMapper categoryEntityMapper;
 
     @Override
     public Void handle(UpdateProductRequest request) {
 
-        Long productId = request.getId();
+        Product product = productRepository.findById(request.getId())
+                .orElseThrow(() -> new ProductNotFoundException(request.getId()));
 
-        Product existing = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id " + productId));
+        ProductDetail productDetail = product.getProductDetail();
 
-        String image = existing.getImage();
-
-        if (request.getFile() != null && !request.getFile().isEmpty()) {
-
-            if (image != null) {
-                fileUtils.deleteProductImage(image);
-            }
-
-            image = fileUtils.saveProductImage(request.getFile());
+        if (productDetail == null) {
+            productDetail = new ProductDetail();
+            product.setProductDetail(productDetail);
         }
 
-//        Product product = Product.builder()
-//                .id(request.getId())
-//                .name(request.getName())
-//                .description(request.getDescription())
-//                .price(request.getPrice())
-//                .image(image)
-//                .build();
+        productDetail.setProvider(request.getProvider());
 
-        existing.setName(request.getName());
-        existing.setDescription(request.getDescription());
-        existing.setPrice(request.getPrice());
-        existing.setImage(image);
+        if (request.getReview() != null) {
+            if (product.getReviews() == null) {
+                product.setReviews(new ArrayList<>());
+            }
+            product.getReviews().add(request.getReview());
+        }
 
-        productRepository.upsert(existing);
+        if (request.getCategoryId() != null) {
+            Category category = queryCategoryRepository.findById(request.getCategoryId())
+                    .map(categoryEntityMapper::mapToCategory)
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        productRepository.upsert(existing);
+            if (product.getCategories() == null) {
+                product.setCategories(new ArrayList<>());
+            }
+            product.getCategories().add(category);
+        }
 
-        log.debug("Product updated with id {}", productId);
+        productRepository.upsert(product);
+
+        log.debug("Product updated with id {}", product.getId());
 
         return null;
     }

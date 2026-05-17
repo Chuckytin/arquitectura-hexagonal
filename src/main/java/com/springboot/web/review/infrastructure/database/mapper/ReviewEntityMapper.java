@@ -17,10 +17,10 @@ import org.mapstruct.*;
 public interface ReviewEntityMapper {
 
     @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
-    @Mapping(target = "productEntity", ignore = true)
+    @Mapping(target = "product", ignore = true)
     ReviewEntity mapToReviewEntity(Review review);
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productEntity"})
+    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
     @Mapping(target = "product", ignore = true)
     Review mapToReview(ReviewEntity reviewEntity);
 }

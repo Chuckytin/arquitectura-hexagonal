@@ -1,5 +1,6 @@
 package com.springboot.web.product.infrastructure.api.dto;
 
+import com.springboot.web.review.infrastructure.api.dto.ReviewDto;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Clase UpdateProductDto que representa lo que se espera recibir en la solicitud para actualizar un producto existente.
@@ -31,6 +31,10 @@ public class UpdateProductDto {
     @DecimalMax(value = "10000.00", inclusive = false)
     private Double price;
 
-    private MultipartFile file;
+    //private MultipartFile file;
+
+    private String provider;
+    private ReviewDto review; //capa de infrastructure
+    private Long categoryId;
 
 }

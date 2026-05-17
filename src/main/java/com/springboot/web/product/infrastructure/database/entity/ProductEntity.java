@@ -38,11 +38,11 @@ public class ProductEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_detail_id")
-    private ProductDetailEntity productDetailEntity;
+    private ProductDetailEntity productDetail;
 
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<ReviewEntity> reviewsEntity = new ArrayList<>();
+    private List<ReviewEntity> reviews = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -51,6 +51,6 @@ public class ProductEntity {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     @Builder.Default
-    private List<CategoryEntity> categoriesEntity = new ArrayList<>();
+    private List<CategoryEntity> categories = new ArrayList<>();
 
 }

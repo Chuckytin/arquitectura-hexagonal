@@ -25,16 +25,8 @@ import org.mapstruct.*;
 )
 public interface ProductEntityMapper {
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail", "reviews", "categories"})
-    @Mapping(target = "productDetailEntity", source = "productDetail")
-    @Mapping(target = "reviewsEntity", source = "reviews")
-    @Mapping(target = "categoriesEntity", source = "categories")
     ProductEntity mapToProductEntity(Product product);
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetailEntity", "reviewsEntity", "categoriesEntity"})
-    @Mapping(target = "productDetail", source = "productDetailEntity")
-    @Mapping(target = "reviews", source = "reviewsEntity")
-    @Mapping(target = "categories", source = "categoriesEntity")
     Product mapToProduct(ProductEntity productEntity);
 
     /**
@@ -44,8 +36,8 @@ public interface ProductEntityMapper {
      */
     @AfterMapping
     default void linkReviews(@MappingTarget ProductEntity productEntity, Product product) {
-        if (productEntity.getReviewsEntity() != null) {
-            productEntity.getReviewsEntity().forEach(review -> review.setProductEntity(productEntity));
+        if (productEntity.getReviews() != null) {
+            productEntity.getReviews().forEach(review -> review.setProduct(productEntity));
         }
     }
 

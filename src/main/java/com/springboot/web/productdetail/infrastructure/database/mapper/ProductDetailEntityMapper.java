@@ -32,14 +32,14 @@ public interface ProductDetailEntityMapper {
      * Los campos escalares (id, specifications, warranty, provider) se mapean automáticamente.
      */
     @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
-    @Mapping(target = "productEntity", ignore = true)
+    @Mapping(target = "product", ignore = true)
     ProductDetailEntity mapToProductDetailEntity(ProductDetail productDetail);
 
     /**
      * productEntity (JPA) es el campo circular — apunta de vuelta a ProductEntity.
      * Se ignora en source y en target por el mismo motivo.
      */
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productEntity"})
+    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
     @Mapping(target = "product", ignore = true)
     ProductDetail mapToProductDetail(ProductDetailEntity productDetailEntity);
 }

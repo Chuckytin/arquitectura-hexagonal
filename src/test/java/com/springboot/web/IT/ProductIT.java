@@ -32,8 +32,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -203,18 +202,17 @@ class ProductIT {
     void shouldUpdateProduct() throws Exception {
         log.info(">>> Test: PUT /api/v1/products");
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file", "image.jpeg", "image/jpeg", "image".getBytes()
-        );
-
         mockMvc.perform(
-                multipart(HttpMethod.PUT, "/api/v1/products")
-                        .file(file)
-                        .param("id", savedProductId.toString())
-                        .param("name", "Product 1 updated")
-                        .param("description", "Description 1 updated")
-                        .param("price", "200.00")
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                put("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "id": %d,
+                                    "name": "Product 1 updated",
+                                    "description": "Description 1 updated",
+                                    "price": 200.00
+                                }
+                                """.formatted(savedProductId))
                         .with(csrf())
         ).andExpect(status().isNoContent());
 

@@ -17,10 +17,10 @@ import org.mapstruct.*;
 public interface CategoryEntityMapper {
 
     @BeanMapping(ignoreUnmappedSourceProperties = {"products"})
-    @Mapping(target = "productsEntity", ignore = true)
+    @Mapping(target = "products", ignore = true)
     CategoryEntity mapToCategoryEntity(Category category);
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productsEntity"})
+    @BeanMapping(ignoreUnmappedSourceProperties = {"products"})
     @Mapping(target = "products", ignore = true)
     Category mapToCategory(CategoryEntity categoryEntity);
 }
