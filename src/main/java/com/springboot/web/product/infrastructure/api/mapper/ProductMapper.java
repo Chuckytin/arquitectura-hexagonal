@@ -1,5 +1,6 @@
 package com.springboot.web.product.infrastructure.api.mapper;
 
+import com.springboot.web.category.domain.entity.Category;
 import com.springboot.web.product.application.command.create.CreateProductRequest;
 import com.springboot.web.product.application.command.update.UpdateProductRequest;
 import com.springboot.web.product.domain.entity.Product;
@@ -28,12 +29,14 @@ public interface ProductMapper {
     UpdateProductRequest mapToUpdateProductRequest(UpdateProductDto updateProductDto);
 
     /**
-     * @BeanMapping ignora el resto de campos de productDetail (specifications,
-     * warranty...) que no tienen destino en ProductDto, evitando error de
-     * unmappedSourcePolicy. Si en el futuro se quieren exponer más campos de
-     * productDetail en el DTO, se añade un @Mapping por cada uno y se retira de ignoreUnmappedSourceProperties.
+     * - provider viene del path productDetail.provider.
+     * - reviews: mapToReviewDto gestiona la conversión Review - ReviewDto.
+     * - categories: mapToCategoyName extrae solo el nombre de cada Category
+     * para exponerlo como List<String> en el DTO, ya que no necesitamos
+     * exponer el objeto Category completo.
      */
     @Mapping(target = "provider", source = "productDetail.provider")
+    @Mapping(target = "categories", source = "categories")
     @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail"})
     ProductDto mapToProductDto(Product product);
 
@@ -43,5 +46,13 @@ public interface ProductMapper {
      */
     @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
     ReviewDto mapToReviewDto(Review review);
+
+    /**
+     * Extrae solo el nombre de Category para List<String> en ProductDto.
+     * Category.products es circular y no tiene destino en String, se ignora.
+     */
+    default String mapToCategoryName(Category category) {
+        return category == null ? null : category.getName();
+    }
 
 }

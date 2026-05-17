@@ -1,5 +1,6 @@
 package com.springboot.web.product.domain.entity;
 
+import com.springboot.web.category.domain.entity.Category;
 import com.springboot.web.productdetail.domain.entity.ProductDetail;
 import com.springboot.web.review.domain.entity.Review;
 import lombok.*;
@@ -23,6 +24,8 @@ public class Product {
     private ProductDetail productDetail;
 
     private List<Review> reviews;
+
+    private List<Category> categories;
 
     @Override
     public boolean equals(Object o) {

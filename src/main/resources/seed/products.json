@@ -4,6 +4,11 @@
     "description": "RGB-backlit wireless keyboard with mechanical switches",
     "image": "1a2b3c4d-1234-5678-9101-abcdefabcdef-keyboard.jpg",
     "price": 89.99,
+    "categories": [
+      {
+        "name": "Gaming Keyboards"
+      }
+    ],
     "productDetail": {
       "specifications": "Cherry MX Red switches, 2.4GHz wireless connectivity, 1ms response time",
       "warranty": "2 years limited manufacturer warranty",
@@ -29,6 +34,11 @@
     "description": "High-fidelity headphones with active noise cancellation",
     "image": "2b3c4d5e-2345-6789-1011-bcdefabcdefa-headphones.jpg",
     "price": 159.95,
+    "categories": [
+      {
+        "name": "Gaming Headsets"
+      }
+    ],
     "productDetail": {
       "specifications": "40mm drivers, 30-hour battery life, Bluetooth 5.0",
       "warranty": "1 year limited warranty",
@@ -50,6 +60,11 @@
     "description": "Ultra HD webcam ideal for streaming and video calls",
     "image": "3c4d5e6f-3456-7890-1121-cdefabcdefab-webcam.jpg",
     "price": 119.50,
+    "categories": [
+      {
+        "name": "Webcams"
+      }
+    ],
     "productDetail": {
       "specifications": "4K/30fps, autofocus, 90-degree field of view",
       "warranty": "2 years warranty against defects",
@@ -79,6 +94,11 @@
     "description": "Mesh back support and adjustable seat for long hours",
     "image": "4d5e6f70-4567-8901-1222-defabcdefabc-chair.jpg",
     "price": 229.00,
+    "categories": [
+      {
+        "name": "Gaming Chairs"
+      }
+    ],
     "productDetail": {
       "specifications": "Weight capacity: 300lbs, adjustable height, lumbar support",
       "warranty": "5 years on parts and materials",
@@ -100,6 +120,11 @@
     "description": "Transform any desk into a standing workstation",
     "image": "5e6f7081-5678-9012-1323-efabcdefabcd-desk.jpg",
     "price": 174.99,
+    "categories": [
+      {
+        "name": "Monitor Stands"
+      }
+    ],
     "productDetail": {
       "specifications": "Height range 5.9 to 19.7, supports up to 33lbs",
       "warranty": "3 years manufacturer warranty",
@@ -121,6 +146,11 @@
     "description": "Multi-port dock for laptops with HDMI, Ethernet and USB",
     "image": "6f708192-6789-0123-1424-fabcdefabcde-dock.jpg",
     "price": 79.90,
+    "categories": [
+      {
+        "name": "Docking Stations"
+      }
+    ],
     "productDetail": {
       "specifications": "11 ports, 100W power delivery, 4K@60Hz display",
       "warranty": "18 months warranty",
@@ -146,6 +176,11 @@
     "description": "Second screen for laptops and tablets via USB-C",
     "image": "7g8192a3-7890-1234-1525-abcdefabcdef-monitor.jpg",
     "price": 139.00,
+    "categories": [
+      {
+        "name": "Portable Monitors"
+      }
+    ],
     "productDetail": {
       "specifications": "15.6 inch IPS, 1920x1080, USB-C powered",
       "warranty": "1 year limited warranty",
@@ -167,6 +202,11 @@
     "description": "Ergonomic mouse with silent clicks and Bluetooth",
     "image": "8h92a3b4-8901-2345-1626-bcdefabcdefa-mouse.jpg",
     "price": 24.99,
+    "categories": [
+      {
+        "name": "Gaming Mice"
+      }
+    ],
     "productDetail": {
       "specifications": "12000 DPI, silent switches, 6 programmable buttons",
       "warranty": "2 years hardware warranty",
@@ -188,6 +228,11 @@
     "description": "Touch control lamp with brightness and temperature settings",
     "image": "9i03b4c5-9012-3456-1727-cdefabcdefab-lamp.jpg",
     "price": 39.99,
+    "categories": [
+      {
+        "name": "Desk Lamps"
+      }
+    ],
     "productDetail": {
       "specifications": "Adjustable color temperature 2700K-6500K, 5 brightness levels",
       "warranty": "1 year warranty",
@@ -213,6 +258,11 @@
     "description": "Professional mic for podcasting and streaming",
     "image": "0j14c5d6-0123-4567-1828-defabcdefabc-mic.jpg",
     "price": 109.99,
+    "categories": [
+      {
+        "name": "USB Microphones"
+      }
+    ],
     "productDetail": {
       "specifications": "48kHz/16bit, cardioid pattern, USB plug & play",
       "warranty": "2 years limited warranty",

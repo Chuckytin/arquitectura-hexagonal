@@ -157,8 +157,8 @@ class ProductRepositoryImplTest {
 
         Product product2 = Product.builder().id(2L).name("Product 2").build();
 
-        List<ProductEntity> productEntities = List.of(productEntity, productEntity2);
-        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 2L);
+        List<ProductEntity> productsEntity = List.of(productEntity, productEntity2);
+        Page<ProductEntity> page = new PageImpl<>(productsEntity, pageRequest, 2L);
 
         when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
                 .thenReturn(page);
@@ -195,8 +195,8 @@ class ProductRepositoryImplTest {
 
         Product product2 = Product.builder().id(2L).name("Product 2").build();
 
-        List<ProductEntity> productEntities = List.of(productEntity, productEntity2);
-        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 3L);
+        List<ProductEntity> productsEntity = List.of(productEntity, productEntity2);
+        Page<ProductEntity> page = new PageImpl<>(productsEntity, pageRequest, 3L);
 
         when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
                 .thenReturn(page);
@@ -226,8 +226,8 @@ class ProductRepositoryImplTest {
 
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "id"));
 
-        List<ProductEntity> productEntities = List.of(productEntity);
-        Page<ProductEntity> page = new PageImpl<>(productEntities, pageRequest, 1L);
+        List<ProductEntity> productsEntity = List.of(productEntity);
+        Page<ProductEntity> page = new PageImpl<>(productsEntity, pageRequest, 1L);
 
         when(queryProductRepository.findAll(any(Specification.class), eq(pageRequest)))
                 .thenReturn(page);

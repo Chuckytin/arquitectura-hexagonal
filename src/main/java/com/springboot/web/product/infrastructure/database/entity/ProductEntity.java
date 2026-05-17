@@ -1,7 +1,8 @@
 package com.springboot.web.product.infrastructure.database.entity;
 
+import com.springboot.web.category.infrastructure.database.entity.CategoryEntity;
 import com.springboot.web.productdetail.infrastructure.database.entity.ProductDetailEntity;
-import com.springboot.web.review.infrastructure.entity.ReviewEntity;
+import com.springboot.web.review.infrastructure.database.entity.ReviewEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,9 +36,6 @@ public class ProductEntity {
 
     private String image;
 
-    /**
-     * Usamos fetch = FetchType.LAZY para obtener el atributo de product_detail_id solo cuando se accede a él.
-     */
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_detail_id")
     private ProductDetailEntity productDetailEntity;
@@ -45,5 +43,14 @@ public class ProductEntity {
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ReviewEntity> reviewsEntity = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "products_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    @Builder.Default
+    private List<CategoryEntity> categoriesEntity = new ArrayList<>();
 
 }

@@ -1,4 +1,4 @@
-package com.springboot.web.review.infrastructure.entity;
+package com.springboot.web.review.infrastructure.database.entity;
 
 import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
 import jakarta.persistence.*;

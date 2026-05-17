@@ -1,7 +1,7 @@
-package com.springboot.web.review.infrastructure.mapper;
+package com.springboot.web.review.infrastructure.database.mapper;
 
 import com.springboot.web.review.domain.entity.Review;
-import com.springboot.web.review.infrastructure.entity.ReviewEntity;
+import com.springboot.web.review.infrastructure.database.entity.ReviewEntity;
 import org.mapstruct.*;
 
 /**

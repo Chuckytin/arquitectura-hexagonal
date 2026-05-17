@@ -1,9 +1,10 @@
 package com.springboot.web.product.infrastructure.database.mapper;
 
+import com.springboot.web.category.infrastructure.database.mapper.CategoryEntityMapper;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
 import com.springboot.web.productdetail.infrastructure.database.mapper.ProductDetailEntityMapper;
-import com.springboot.web.review.infrastructure.mapper.ReviewEntityMapper;
+import com.springboot.web.review.infrastructure.database.mapper.ReviewEntityMapper;
 import org.mapstruct.*;
 
 /**
@@ -20,27 +21,20 @@ import org.mapstruct.*;
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedSourcePolicy = ReportingPolicy.ERROR,
-        uses = {ProductDetailEntityMapper.class, ReviewEntityMapper.class}
+        uses = {ProductDetailEntityMapper.class, ReviewEntityMapper.class, CategoryEntityMapper.class}
 )
 public interface ProductEntityMapper {
 
-    /**
-     * @Mapping renombra productDetail (dominio) - productDetailEntity (entidad JPA).
-     * @BeanMapping ignora productDetail como source sin mapeo restante, ya que
-     * la conversión completa la gestiona ProductDetailEntityMapper vía uses.
-     */
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail"})
+    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail", "reviews", "categories"})
     @Mapping(target = "productDetailEntity", source = "productDetail")
     @Mapping(target = "reviewsEntity", source = "reviews")
+    @Mapping(target = "categoriesEntity", source = "categories")
     ProductEntity mapToProductEntity(Product product);
 
-    /**
-     * Inverso del anterior: productDetailEntity (entidad JPA) - productDetail (dominio).
-     * ProductDetailEntityMapper se encarga de la conversión interna del objeto anidado.
-     */
-    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetailEntity"})
+    @BeanMapping(ignoreUnmappedSourceProperties = {"productDetailEntity", "reviewsEntity", "categoriesEntity"})
     @Mapping(target = "productDetail", source = "productDetailEntity")
     @Mapping(target = "reviews", source = "reviewsEntity")
+    @Mapping(target = "categories", source = "categoriesEntity")
     Product mapToProduct(ProductEntity productEntity);
 
     /**

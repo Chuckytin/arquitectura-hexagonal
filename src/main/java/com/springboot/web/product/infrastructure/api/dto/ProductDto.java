@@ -27,4 +27,6 @@ public class ProductDto {
 
     private List<ReviewDto> reviews;
 
+    private List<String> categories;
+
 }

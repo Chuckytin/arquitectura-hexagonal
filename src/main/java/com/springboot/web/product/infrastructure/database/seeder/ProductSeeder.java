@@ -2,32 +2,55 @@ package com.springboot.web.product.infrastructure.database.seeder;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.web.product.domain.entity.Product;
+import com.springboot.web.category.infrastructure.database.entity.CategoryEntity;
+import com.springboot.web.category.infrastructure.database.repository.QueryCategoryRepository;
 import com.springboot.web.product.infrastructure.database.entity.ProductEntity;
-import com.springboot.web.product.infrastructure.database.mapper.ProductEntityMapper;
 import com.springboot.web.product.infrastructure.database.repository.QueryProductRepository;
+import com.springboot.web.productdetail.infrastructure.database.entity.ProductDetailEntity;
+import com.springboot.web.review.infrastructure.database.entity.ReviewEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @Profile({"dev", "local"})
+@Order(2)
 @RequiredArgsConstructor
 @Slf4j
 public class ProductSeeder implements CommandLineRunner {
 
     private final QueryProductRepository productRepository;
+    private final QueryCategoryRepository categoryRepository;
     private final ResourceLoader resourceLoader;
-    private final ProductEntityMapper productEntityMapper;
-
     private final ObjectMapper objectMapper;
+
+    /**
+     * DTO interno solo para deserializar el JSON — nombres coinciden exactamente con el JSON
+     */
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    static class ProductSeedDto {
+        private String name;
+        private String description;
+        private Double price;
+        private String image;
+        private ProductDetailEntity productDetail;
+        private List<ReviewEntity> reviews = new ArrayList<>();
+        private List<CategoryEntity> categories = new ArrayList<>();
+    }
 
     @Override
     public void run(String @NonNull ... args) throws Exception {
@@ -39,19 +62,40 @@ public class ProductSeeder implements CommandLineRunner {
 
         Resource resource = resourceLoader.getResource("classpath:seed/products.json");
 
-        List<Product> products = objectMapper.readValue(
+        List<ProductSeedDto> seedDtos = objectMapper.readValue(
                 resource.getInputStream(),
                 new TypeReference<>() {
+                }
+        );
 
-                });
+        List<ProductEntity> productsEntity = seedDtos.stream()
+                .map(dto -> {
+                    List<CategoryEntity> persistedCategories = dto.getCategories().stream()
+                            .map(cat -> categoryRepository.findByName(cat.getName())
+                                    .orElseThrow(() -> new IllegalStateException(
+                                            "Categoría no encontrada: " + cat.getName())))
+                            .toList();
 
-        List<ProductEntity> productEntities = products.stream()
-                .map(productEntityMapper::mapToProductEntity)
+                    ProductEntity productEntity = ProductEntity.builder()
+                            .name(dto.getName())
+                            .description(dto.getDescription())
+                            .price(dto.getPrice())
+                            .image(dto.getImage())
+                            .productDetailEntity(dto.getProductDetail())
+                            .reviewsEntity(dto.getReviews())
+                            .categoriesEntity(persistedCategories)
+                            .build();
+
+                    // Establece la FK product_id en cada review
+                    productEntity.getReviewsEntity()
+                            .forEach(review -> review.setProductEntity(productEntity));
+
+                    return productEntity;
+                })
                 .toList();
 
-        productRepository.saveAll(productEntities);
+        productRepository.saveAll(productsEntity);
 
-        log.info("Seeder completado: {} productos insertados desde JSON.", productEntities.size());
+        log.info("Seeder completado: {} productos insertados desde JSON.", productsEntity.size());
     }
-
 }
