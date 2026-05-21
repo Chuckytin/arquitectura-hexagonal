@@ -1,4 +1,4 @@
-package com.springboot.web.common.infraestructure.util;
+package com.springboot.web.common.infrastructure.util;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

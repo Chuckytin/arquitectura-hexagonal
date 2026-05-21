@@ -1,4 +1,4 @@
-package com.springboot.web.common.infraestructure.config;
+package com.springboot.web.common.infrastructure.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;

@@ -1,7 +1,7 @@
 package com.springboot.web.product.application.command.create;
 
 import com.springboot.web.common.application.mediator.RequestHandler;
-import com.springboot.web.common.infraestructure.util.FileUtils;
+import com.springboot.web.common.infrastructure.util.FileUtils;
 import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.product.domain.port.ProductRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.springboot.web.common.infraestructure.config;
+package com.springboot.web.common.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

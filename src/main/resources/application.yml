@@ -42,3 +42,9 @@ logging:
     root: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] [%thread] %logger{36} - %msg%n"
+
+jwt:
+  # Valores por defecto para desarrollo local
+  secret-key: ${JWT_SECRET_KEY:defaultDevSecretKeyForLocal12345678901234567890}
+  token-expiration: ${JWT_TOKEN_EXPIRATION:5000}
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:300000}

@@ -1,4 +1,4 @@
-package com.springboot.web.common.infraestructure.exceptions;
+package com.springboot.web.common.infrastructure.exceptions;
 
 import com.springboot.web.product.domain.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
