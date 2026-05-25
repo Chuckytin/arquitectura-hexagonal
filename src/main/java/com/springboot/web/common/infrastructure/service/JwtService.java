@@ -176,7 +176,7 @@ public class JwtService {
     /**
      * Verifica si el token está expirado.
      */
-    public Boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         try {
             final Date expiration = getClaimIgnoringExpiration(token, Claims::getExpiration);
             return expiration.before(new Date());
@@ -188,7 +188,7 @@ public class JwtService {
     /**
      * Indica si un token expirado puede renovarse.
      */
-    public Boolean canBeTokenRenewed(String token) {
+    public boolean canBeTokenRenewed(String token) {
         try {
             Date expiration = getClaimIgnoringExpiration(token, Claims::getExpiration);
             Date now = new Date();
@@ -216,10 +216,10 @@ public class JwtService {
     /**
      * Valida que el token pertenezca al usuario y no esté expirado.
      */
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         try {
-            final String username = getUsernameFromExpiredToken(token);
-            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+            final String username = getUsernameFromToken(token);
+            return username.equals(userDetails.getUsername());
         } catch (Exception e) {
             log.warn("Token validation failed: {}", e.getMessage());
             return false;

@@ -1,4 +1,4 @@
-package com.springboot.web.user.infrastructure.dto;
+package com.springboot.web.user.infrastructure.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDto {
+public class TokenResponseDto {
 
-    private String email;
-    private String password;
+    private String token;
 
 }

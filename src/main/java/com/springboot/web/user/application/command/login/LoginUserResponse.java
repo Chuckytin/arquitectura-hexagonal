@@ -1,4 +1,4 @@
-package com.springboot.web.user.infrastructure.dto;
+package com.springboot.web.user.application.command.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponseDto {
+public class LoginUserResponse {
 
     private String token;
 
