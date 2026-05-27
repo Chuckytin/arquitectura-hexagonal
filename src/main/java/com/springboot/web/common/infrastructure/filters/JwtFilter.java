@@ -1,5 +1,6 @@
 package com.springboot.web.common.infrastructure.filters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.web.common.infrastructure.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Filtro JWT que intercepta cada petición HTTP exactamente una vez (OncePerRequestFilter).
@@ -35,6 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(
@@ -54,7 +57,6 @@ public class JwtFilter extends OncePerRequestFilter {
         log.debug("Token received successfully");
 
         try {
-
             String username = jwtService.getUsernameFromExpiredToken(token);
             log.debug("Extracted username: {}", username);
 
@@ -69,25 +71,35 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
                 if (jwtService.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     log.debug("Authentication successful for user: {}", username);
-
                 } else {
                     log.warn("Invalid token for user: {}", username);
+                    sendErrorResponse(response, "Invalid token");
+                    return;
                 }
             }
 
         } catch (Exception e) {
             log.error("Error processing JWT token: {}", e.getMessage());
+            sendErrorResponse(response, e.getMessage());
+            return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void sendErrorResponse(HttpServletResponse response, String message)
+            throws IOException {
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        objectMapper.writeValue(response.getWriter(),
+                Map.of("error", message, "status", HttpServletResponse.SC_FORBIDDEN));
     }
 }

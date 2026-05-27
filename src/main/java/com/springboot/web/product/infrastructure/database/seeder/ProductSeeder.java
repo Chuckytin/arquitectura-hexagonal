@@ -22,7 +22,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @Profile({"dev", "local"})
@@ -70,11 +73,11 @@ public class ProductSeeder implements CommandLineRunner {
 
         List<ProductEntity> productsEntity = seedDtos.stream()
                 .map(dto -> {
-                    List<CategoryEntity> persistedCategories = dto.getCategories().stream()
+                    Set<CategoryEntity> persistedCategories = dto.getCategories().stream()
                             .map(cat -> categoryRepository.findByName(cat.getName())
                                     .orElseThrow(() -> new IllegalStateException(
                                             "Categoría no encontrada: " + cat.getName())))
-                            .toList();
+                            .collect(Collectors.toSet());
 
                     ProductEntity productEntity = ProductEntity.builder()
                             .name(dto.getName())
@@ -82,7 +85,7 @@ public class ProductSeeder implements CommandLineRunner {
                             .price(dto.getPrice())
                             .image(dto.getImage())
                             .productDetail(dto.getProductDetail())
-                            .reviews(dto.getReviews())
+                            .reviews(new HashSet<>(dto.getReviews()))
                             .categories(persistedCategories)
                             .build();
 

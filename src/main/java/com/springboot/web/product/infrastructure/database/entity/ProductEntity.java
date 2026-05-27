@@ -6,13 +6,9 @@ import com.springboot.web.review.infrastructure.database.entity.ReviewEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Clase ProductEntity que representa la entidad de products en la base de datos.
- * Se utiliza para mapear los datos de la base de datos a objetos Java.
- */
 @Entity
 @Table(name = "products")
 @Getter
@@ -42,7 +38,7 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<ReviewEntity> reviews = new ArrayList<>();
+    private Set<ReviewEntity> reviews = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -51,6 +47,5 @@ public class ProductEntity {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     @Builder.Default
-    private List<CategoryEntity> categories = new ArrayList<>();
-
+    private Set<CategoryEntity> categories = new HashSet<>();
 }

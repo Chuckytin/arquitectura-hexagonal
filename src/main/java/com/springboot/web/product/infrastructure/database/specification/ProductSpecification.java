@@ -36,7 +36,11 @@ public class ProductSpecification {
             if (value == null || value.isBlank()) {
                 return null;
             }
-            return criteriaBuilder.like(root.get(field), "%" + value.trim() + "%");
+            //return criteriaBuilder.like(root.get(field), "%" + value.trim().toLowerCase() + "%");
+            return criteriaBuilder.like(
+                    criteriaBuilder.function("lower", String.class, root.get(field)),
+                    "%" + value.trim().toLowerCase() + "%"
+            );
         };
     }
 

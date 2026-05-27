@@ -24,6 +24,7 @@ import java.util.function.Function;
 public class JwtService {
 
     private final JwtProperties jwtProperties;
+    private final TokenBlacklistService tokenBlacklistService;
 
     /**
      * Genera access token con authorities del usuario.
@@ -35,14 +36,6 @@ public class JwtService {
                 .toList()
         );
         return generateToken(claims, userDetails.getUsername());
-    }
-
-    /**
-     * Genera refresh token de larga duración para renovar access tokens.
-     */
-    public String generateRefreshToken(UserDetails userDetails) {
-        Map<String, Object> claims = Map.of("type", "refresh");
-        return generateToken(claims, userDetails.getUsername(), jwtProperties.getRefreshTokenExpiration());
     }
 
     /**
@@ -129,41 +122,6 @@ public class JwtService {
         return getClaim(token, Claims::getSubject);
     }
 
-    /**
-     * Extrae fecha de expiración.
-     */
-    public Date getExpirationDateFromToken(String token) {
-        return getClaim(token, Claims::getExpiration);
-    }
-
-    /**
-     * Extrae fecha de emisión.
-     */
-    public Date getIssuedAtDateFromToken(String token) {
-        return getClaim(token, Claims::getIssuedAt);
-    }
-
-    /**
-     * Extrae tipo de token (access/refresh).
-     */
-    public String getTokenType(String token) {
-        return getClaim(token, claims -> claims.get("type", String.class));
-    }
-
-    /**
-     * Extrae lista de authorities/roles.
-     */
-    @SuppressWarnings("unchecked")
-    public List<String> getAuthorities(String token) {
-        return getClaim(token, claims -> claims.get("authorities", List.class));
-    }
-
-    /**
-     * Extrae cualquier claim personalizado por nombre y tipo.
-     */
-    public <T> T getClaimValue(String token, String claimName, Class<T> requiredType) {
-        return getClaim(token, claims -> claims.get(claimName, requiredType));
-    }
 
     /**
      * Obtiene clave HMAC-SHA de la configuración.
@@ -214,10 +172,15 @@ public class JwtService {
     }
 
     /**
-     * Valida que el token pertenezca al usuario y no esté expirado.
+     * Valida que el token pertenezca al usuario y no esté expirado ni en blacklist.
      */
     public boolean validateToken(String token, UserDetails userDetails) {
         try {
+            if (tokenBlacklistService.isBlacklisted(token)) {
+                log.warn("Token is blacklisted for user: {}", userDetails.getUsername());
+                return false;
+            }
+
             final String username = getUsernameFromToken(token);
             return username.equals(userDetails.getUsername());
         } catch (Exception e) {
@@ -225,5 +188,26 @@ public class JwtService {
             return false;
         }
     }
+
+    /**
+     * Invalida un token añadiéndolo a la blacklist
+     */
+    public void invalidateToken(String token) {
+        try {
+            Date expiration = getClaimIgnoringExpiration(token, Claims::getExpiration);
+            long timeToLive = expiration.getTime() - System.currentTimeMillis();
+
+            if (timeToLive <= 0) {
+                log.debug("Token already expired, no need to blacklist");
+                return;
+            }
+
+            tokenBlacklistService.invalidateToken(token, timeToLive);
+            log.info("Token invalidated successfully");
+        } catch (Exception e) {
+            log.error("Error invalidating token: {}", e.getMessage());
+        }
+    }
+
 
 }
