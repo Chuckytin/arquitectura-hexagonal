@@ -3,7 +3,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/web_db?reWriteBatchedInserts=true
     username: root
     password: password
-
     hikari:
       maximum-pool-size: 2
       minimum-idle: 1
@@ -11,12 +10,15 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop  # Cuando se use Flyway, cambiar a 'none'
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
+  flyway:
+    enabled: false
+    
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -53,7 +55,7 @@ management:
       percentiles-histogram:
         http.server.requests: true
       percentiles:
-        http.server.requests: 0.5,0.95,0.99
+        http.server.requests: 0.5, 0.95, 0.99
     tags:
       application: web
       environment: local
@@ -64,3 +66,13 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
     com.springboot.web: DEBUG
+
+jwt:
+  secret-key: defaultDevSecretKeyForLocal12345678901234567890
+  token-expiration: 10000
+  refresh-token-expiration: 300000
+
+app:
+  admin:
+    email: admin@local.com
+    password: admin1234

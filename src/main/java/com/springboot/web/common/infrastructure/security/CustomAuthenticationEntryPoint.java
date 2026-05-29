@@ -45,13 +45,15 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         log.debug("Authentication failed for URI: {}, Accept: {}", requestURI, acceptHeader);
 
+        boolean isActuatorRequest = requestURI.startsWith("/actuator");
+
         boolean isApiRequest = requestURI.startsWith("/api/") &&
                 (acceptHeader != null && acceptHeader.contains("application/json"));
 
         boolean isOAuth2Request = requestURI.contains("/oauth2/") ||
                 requestURI.contains("/login");
 
-        if (isApiRequest && !isOAuth2Request) {
+        if ((isApiRequest || isActuatorRequest) && !isOAuth2Request) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

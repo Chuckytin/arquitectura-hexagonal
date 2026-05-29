@@ -1,20 +1,23 @@
+# Configuración específica de DEV - los valores vienen de .env.dev
 spring:
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:web_db}?reWriteBatchedInserts=true
-    username: ${POSTGRES_USER:root}
-    password: ${POSTGRES_PASSWORD:password}
-
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?reWriteBatchedInserts=true
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     hikari:
       maximum-pool-size: 5
       minimum-idle: 2
 
   jpa:
     hibernate:
-      ddl-auto: update  # Cuando se use Flyway, cambiar a 'none'
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  flyway:
+    enabled: false
 
 springdoc:
   swagger-ui:
@@ -37,7 +40,7 @@ api:
       url: http://www.apache.org/licenses/LICENSE-2.0
     servers:
       url: http://localhost:8080
-      description: API server for local development
+      description: API server for development environment
 
 management:
   endpoints:
@@ -48,11 +51,6 @@ management:
     health:
       show-details: always
   metrics:
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true
-      percentiles:
-        http.server.requests: 0.5, 0.95, 0.99
     tags:
       application: web
       environment: dev
@@ -61,5 +59,4 @@ logging:
   level:
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
     com.springboot.web: DEBUG

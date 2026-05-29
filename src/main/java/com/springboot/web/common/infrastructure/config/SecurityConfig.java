@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 PUBLIC_ENDPOINTS
                         ).permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

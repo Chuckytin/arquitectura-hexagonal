@@ -1,12 +1,18 @@
-# Para la mayoría de casos: make dev-down + make dev es suficiente
-
 # ===========
-# LOCAL
+# LOCAL (solo DB para IntelliJ)
 # ===========
 
 # Levanta solo la base de datos para desarrollo local desde IntelliJ
 local-db:
-	docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres adminer
+	docker compose -f docker-compose.local.yml up
+
+# Para contenedores conservando estado — usar si vas a reanudar pronto en el mismo entorno
+local-db-stop:
+	docker compose -f docker-compose.local.yml down
+
+# Reset total local — BORRA VOLÚMENES Y BASE DE DATOS
+local-db-clean:
+	docker compose -f docker-compose.local.yml down -v --remove-orphans
 
 # ===========
 # DEVELOPMENT

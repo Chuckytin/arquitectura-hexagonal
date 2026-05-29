@@ -29,22 +29,4 @@ public class UserEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    // Los 4 campos booleanos de Spring Security los gestiona UserDetails directamente.
-    // No hace falta persistirlos aquí salvo necesidad del control por usuario en BBDD.
-//    @Builder.Default
-//    @Column(name = "account_non_expired")
-//    private boolean accountNonExpired = true;
-//
-//    @Builder.Default
-//    @Column(name = "account_non_locked")
-//    private boolean accountNonLocked = true;
-//
-//    @Builder.Default
-//    @Column(name = "credentials_non_expired")
-//    private boolean credentialsNonExpired = true;
-//
-//    @Builder.Default
-//    @Column(name = "enabled")
-//    private boolean enabled = true;
-
 }

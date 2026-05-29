@@ -4,23 +4,16 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     env_file:
-      - .env
+      - .env.prod
     environment:
       SPRING_PROFILES_ACTIVE: prod
+    restart: always
 
   postgres:
     env_file:
-      - .env
-    environment:
-      # Mapeo explícito de variables
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - .env.prod
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
     volumes:
       - postgres-data-prod:/var/lib/postgresql
       - ./docker-config/database/init.sh:/docker-entrypoint-initdb.d/init.sh

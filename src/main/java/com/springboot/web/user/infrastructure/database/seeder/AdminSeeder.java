@@ -14,7 +14,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({"dev", "local"})
+@Profile({"dev", "local", "prod"})
 @Order(0)
 @RequiredArgsConstructor
 @Slf4j
@@ -31,19 +31,27 @@ public class AdminSeeder implements CommandLineRunner {
 
     @Override
     public void run(String @NonNull ... args) {
-        if (userRepository.findByEmail(adminEmail).isPresent()) {
-            log.debug("Seeder omitido: el usuario admin ya existe.");
-            return;
+
+        try {
+            if (userRepository.findByEmail(adminEmail).isPresent()) {
+                log.info("Seeder omitido: el usuario admin ya existe.");
+                return;
+            }
+
+            User admin = User.builder()
+                    .email(adminEmail)
+                    .password(passwordEncoderPort.encode(adminPassword))
+                    .role(UserRole.ADMIN)
+                    .build();
+
+            userRepository.upsert(admin);
+            log.info("Seeder completado: usuario admin creado con email {}.", adminEmail);
+            
+        } catch (Exception e) {
+            log.error("Seeder falló — la tabla users puede no existir aún: {}", e.getMessage());
+            throw e;
         }
 
-        User admin = User.builder()
-                .email(adminEmail)
-                .password(passwordEncoderPort.encode(adminPassword))
-                .role(UserRole.ADMIN)
-                .build();
-
-        userRepository.upsert(admin);
-
-        log.info("Seeder completado: usuario admin creado con email {}.", adminEmail);
     }
+
 }

@@ -11,20 +11,12 @@ spring:
             client-secret: ${GITHUB_CLIENT_SECRET}
 
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${DB_SSL_MODE:disable}&reWriteBatchedInserts=true
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
     hikari:
       pool-name: HikariPool-Web
-      maximum-pool-size: 10
-      minimum-idle: 2
-      idle-timeout: 600000
-      max-lifetime: 1800000
       connection-timeout: 20000
       validation-timeout: 5000
-      leak-detection-threshold: 60000
+      max-lifetime: 1800000
 
   jpa:
     naming:
@@ -39,12 +31,6 @@ spring:
   cache:
     type: simple
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-
 logging:
   level:
     root: INFO
@@ -52,12 +38,12 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] [%thread] %logger{36} - %msg%n"
 
 jwt:
-  # Valores por defecto para desarrollo local
-  secret-key: ${JWT_SECRET_KEY:defaultDevSecretKeyForLocal12345678901234567890}
-  token-expiration: ${JWT_TOKEN_EXPIRATION:5000}
-  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:300000}
+  secret-key: ${JWT_SECRET_KEY}
+  token-expiration: ${JWT_TOKEN_EXPIRATION}
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
 
 app:
+  version: v@project.version@
   admin:
-    email: ${ADMIN_EMAIL:admin@local.com}
-    password: ${ADMIN_PASSWORD:admin1234}
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}

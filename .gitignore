@@ -16,8 +16,11 @@ yarn-error.log*
 
 # Env files
 .env
+.env.dev
+.env.prod
 .env.*
-!.env.example
+!.env.dev.example
+!.env.prod.example
 
 # Node / Frontend (React + Vite)
 node_modules/
