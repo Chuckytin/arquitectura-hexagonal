@@ -2,7 +2,10 @@ package com.springboot.web.review.infrastructure.database.mapper;
 
 import com.springboot.web.review.domain.entity.Review;
 import com.springboot.web.review.infrastructure.database.entity.ReviewEntity;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * Mapper entre ReviewEntity y Review.
@@ -16,11 +19,9 @@ import org.mapstruct.*;
 )
 public interface ReviewEntityMapper {
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "product.id", source = "productId")
     ReviewEntity mapToReviewEntity(Review review);
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "productId", source = "product.id")
     Review mapToReview(ReviewEntity reviewEntity);
 }

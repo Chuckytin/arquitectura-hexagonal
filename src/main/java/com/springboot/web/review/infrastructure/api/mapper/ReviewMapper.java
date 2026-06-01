@@ -18,6 +18,6 @@ public interface ReviewMapper {
 
     UpdateReviewRequest mapToUpdateReviewRequest(UpdateReviewDto dto);
 
-    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
+    @BeanMapping(ignoreUnmappedSourceProperties = {"productId"})
     ReviewDto mapToReviewDto(Review review);
 }

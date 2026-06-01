@@ -25,8 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.PropertyEditorSupport;
 import java.net.URI;
 
 @RestController
@@ -38,6 +41,19 @@ public class ProductController implements ProductApi {
 
     private final Mediator mediator;
     private final ProductMapper productMapper;
+
+    /**
+     * string vacío de Swagger se descarta silenciosamente
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(MultipartFile.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                
+            }
+        });
+    }
 
     @Operation(summary = "Get All products", description = "Retrieve a page of products")
     @GetMapping()

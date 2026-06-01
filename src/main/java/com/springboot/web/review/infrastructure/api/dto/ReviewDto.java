@@ -14,5 +14,5 @@ public class ReviewDto {
     private Long id;
     private String comment;
     private Integer score;
-
+    private Long productId;
 }

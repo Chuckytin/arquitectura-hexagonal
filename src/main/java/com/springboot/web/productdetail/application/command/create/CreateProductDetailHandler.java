@@ -1,7 +1,6 @@
 package com.springboot.web.productdetail.application.command.create;
 
 import com.springboot.web.common.application.mediator.RequestHandler;
-import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.productdetail.domain.entity.ProductDetail;
 import com.springboot.web.productdetail.domain.port.ProductDetailRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +20,12 @@ public class CreateProductDetailHandler implements RequestHandler<CreateProductD
                 .specifications(request.getSpecifications())
                 .warranty(request.getWarranty())
                 .provider(request.getProvider())
-                .product(Product.builder().id(request.getProductId()).build())
                 .build();
 
         ProductDetail stored = productDetailRepository.upsert(productDetail);
-        log.info("ProductDetail created with id {}", stored.getId());
+        productDetailRepository.linkToProduct(stored.getId(), request.getProductId());
+
+        log.info("ProductDetail created with id {} linked to product {}", stored.getId(), request.getProductId());
         return new CreateProductDetailResponse(stored);
     }
 

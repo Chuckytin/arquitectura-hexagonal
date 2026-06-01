@@ -15,4 +15,9 @@ public interface ProductDetailRepository {
     boolean existsById(Long id);
 
     void deleteById(Long id);
+
+    void linkToProduct(Long productDetailId, Long productId);
+
+    void unlinkFromProduct(Long productDetailId);
+
 }

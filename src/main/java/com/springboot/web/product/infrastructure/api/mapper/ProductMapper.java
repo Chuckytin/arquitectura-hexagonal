@@ -28,26 +28,17 @@ public interface ProductMapper {
 
     UpdateProductRequest mapToUpdateProductRequest(UpdateProductDto updateProductDto);
 
-    /**
-     * - provider viene del path productDetail.provider.
-     * - reviews: mapToReviewDto gestiona la conversión Review - ReviewDto.
-     * - categories: mapToCategoyName extrae solo el nombre de cada Category
-     * para exponerlo como List<String> en el DTO, ya que no necesitamos
-     * exponer el objeto Category completo.
-     */
     @Mapping(target = "provider", source = "productDetail.provider")
     @Mapping(target = "categories", source = "categories")
     @BeanMapping(ignoreUnmappedSourceProperties = {"productDetail"})
     ProductDto mapToProductDto(Product product);
 
-    /**
-     * Mapea la lista de reviews dentro de mapToProductDto.
-     * Review.product es circular y no tiene destino en ReviewDto, se ignora en source.
-     */
-    @BeanMapping(ignoreUnmappedSourceProperties = {"product"})
+    // productId no tiene destino en ReviewDto dentro de ProductDto — se ignora
+    @BeanMapping(ignoreUnmappedSourceProperties = {"productId"})
     ReviewDto mapToReviewDto(Review review);
 
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "productId", ignore = true)
+    @BeanMapping(ignoreUnmappedSourceProperties = {"productId"})
     Review mapToReview(ReviewDto reviewDto);
 
     /**

@@ -19,6 +19,7 @@ public class DeleteProductDetailHandler implements RequestHandler<DeleteProductD
         if (!productDetailRepository.existsById(request.getId())) {
             throw new ProductDetailNotFoundException(request.getId());
         }
+        productDetailRepository.unlinkFromProduct(request.getId());
         productDetailRepository.deleteById(request.getId());
         log.info("ProductDetail deleted with id {}", request.getId());
         return null;

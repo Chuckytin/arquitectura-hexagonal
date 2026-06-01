@@ -1,6 +1,5 @@
 package com.springboot.web.review.domain.entity;
 
-import com.springboot.web.product.domain.entity.Product;
 import lombok.*;
 
 import java.util.Objects;
@@ -16,7 +15,7 @@ public class Review {
     private String comment;
     private Integer score;
 
-    private Product product;
+    private Long productId;
 
     @Override
     public boolean equals(Object o) {

@@ -1,7 +1,6 @@
 package com.springboot.web.review.application.command.create;
 
 import com.springboot.web.common.application.mediator.RequestHandler;
-import com.springboot.web.product.domain.entity.Product;
 import com.springboot.web.review.domain.entity.Review;
 import com.springboot.web.review.domain.port.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ public class CreateReviewHandler implements RequestHandler<CreateReviewRequest, 
         Review review = Review.builder()
                 .comment(request.getComment())
                 .score(request.getScore())
-                .product(Product.builder().id(request.getProductId()).build())
+                .productId(request.getProductId())
                 .build();
 
         Review stored = reviewRepository.upsert(review);

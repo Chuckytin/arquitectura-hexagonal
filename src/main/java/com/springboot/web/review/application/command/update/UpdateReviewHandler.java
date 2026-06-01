@@ -24,7 +24,7 @@ public class UpdateReviewHandler implements RequestHandler<UpdateReviewRequest, 
                 .id(existing.getId())
                 .comment(request.getComment())
                 .score(request.getScore())
-                .product(existing.getProduct())
+                .productId(existing.getProductId())
                 .build();
 
         reviewRepository.upsert(updated);
